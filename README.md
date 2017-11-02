@@ -73,4 +73,4 @@ Will be available on the Google Play Store once the application is complete
 
 ## Author
 
-* **Jason Karrel** - *Initial work* - [PurpleBooth](https://github.com/PurpleBooth)
+* **Jason Karrel**
