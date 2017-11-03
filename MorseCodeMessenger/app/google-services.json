@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "744951534851",
+    "firebase_url": "https://morse-code-messenger.firebaseio.com",
+    "project_id": "morse-code-messenger",
+    "storage_bucket": "morse-code-messenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:744951534851:android:d01d8b1aeba8ae4e",
+        "android_client_info": {
+          "package_name": "com.example.jasonk20.morsecodemessenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "744951534851-7ua3joq8trnv4rcc0oscf4bkg0msbpel.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jasonk20.morsecodemessenger",
+            "certificate_hash": "b74560c26bc153bbe0b0b0324e9e45c87d33bf9f"
+          }
+        },
+        {
+          "client_id": "744951534851-dnvmd7leoc25crde89qhi0hv6saks7nd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBVmc8Oju_RVqOuOreSuEv4FaBluIE04yI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "744951534851-dnvmd7leoc25crde89qhi0hv6saks7nd.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

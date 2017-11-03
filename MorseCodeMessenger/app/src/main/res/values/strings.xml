@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Morse Code Messenger</string>
+    <string name="password">Password...</string>
+    <string name="login">Login</string>
+    <string name="need_an_account">Need an Account?</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="email">Email...</string>
+    <string name="logo">logo</string>
+    <string name="register">Register</string>
+    <string name="auth_failed">Authentication Error: could not create new user</string>
+    <string name="send">Send</string>
+    <string name="enter_message">Enter Message</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="settings">Settings</string>
+</resources>

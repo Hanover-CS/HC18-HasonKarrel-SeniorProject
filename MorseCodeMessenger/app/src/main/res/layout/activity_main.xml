@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.jasonk20.morsecodemessenger.MainActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_Toolbar"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/Theme.AppCompat.Light" />
+
+    <ScrollView
+        android:id="@+id/my_ScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="437dp">
+        <TextView
+            android:id="@+id/chatMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </ScrollView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/userMessage_TV"
+        android:text="The user's message in Morse code"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1">
+            <ImageButton
+                android:layout_width="40dip"
+                android:layout_height="40dip"
+                android:id="@+id/backspace_Btn"
+
+                android:background="@drawable/backspace_icon"/>
+            </RelativeLayout>
+
+
+       <RelativeLayout
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_weight="1"
+           android:layout_gravity="center">
+
+           <ImageButton
+               android:id="@+id/short_Btn"
+               android:layout_width="50dip"
+               android:layout_height="50dip"
+               android:background="@drawable/dot_icon" />
+       </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center">
+            <ImageButton
+                android:id="@+id/long_Btn"
+                android:layout_width="50dip"
+                android:layout_height="50dip"
+                android:background="@drawable/dash_icon" />
+        </RelativeLayout>
+
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center">
+            <ImageButton
+                android:layout_width="50dip"
+                android:layout_height="50dip"
+                android:background="@drawable/spacebar_icon"
+                android:layout_gravity="center"
+                android:id="@+id/spacebar_Btn"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_gravity="center">
+            <ImageButton
+                android:layout_width="40dip"
+                android:layout_height="40dip"
+                android:background="@drawable/send_icon"
+                android:id="@+id/send_Btn"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
