@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -124,10 +125,20 @@ public class MainActivity extends AppCompatActivity {
                 String currDate = dateFormat.format(date);
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 String currUser;
+
+                ArrayList<String> englishMessage = new ArrayList<String>();
+                for (int i = 0; i < allLetters.length; i++) {
+                    if (allLetters[i] != null) {
+                        englishMessage.add(allLetters[i]);
+                    } else {
+                        break;
+                    }
+                }
+
                 if (user != null) {
                     currUser = user.getEmail();
                     map2.put("Username", currUser);
-                    map2.put("Message", Arrays.toString(allLetters));
+                    map2.put("Message", englishMessage.toString());
                     map2.put("DateSent", currDate);
 //                    Adds message to database
                     message_root.updateChildren(map2);
@@ -135,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
 
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -177,9 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
             mMessage.append(user + " : " + message + " : " + date + " \n");
         }
-
     }
-
 
     @Override
     protected void onStart() {
