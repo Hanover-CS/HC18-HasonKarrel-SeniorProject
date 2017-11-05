@@ -7,8 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
@@ -25,13 +23,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 
-import static android.R.attr.data;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,8 +43,10 @@ public class MainActivity extends AppCompatActivity {
     private Button mBackSpace;
     private Button mDot;
     private Button mDash;
-    private Button mSpace;
+    private Button mSpacebar;
     private ArrayList<String> currLetter = new ArrayList<String>();
+    private String[] allLetters = new String[20];
+    private int letterTracker = 0;
     private String letter;
     private Translation translation = new Translation();
 
@@ -69,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         mBackSpace = (Button) findViewById(R.id.backspace_Btn);
         mDot = (Button) findViewById(R.id.dot_Btn);
         mDash = (Button) findViewById(R.id.dash_Btn);
-        mSpace = (Button) findViewById(R.id.spacebar_Btn);
+        mSpacebar = (Button) findViewById(R.id.spacebar_Btn);
 
 
         // Write a message to the database
@@ -82,7 +81,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 currLetter.add("short");
                 letter = translation.Translate(currLetter);
-                mUserMessage.setText(letter);
+                allLetters[letterTracker] = letter;
+                mUserMessage.setText(Arrays.toString(allLetters));
             }
         });
 
@@ -91,9 +91,21 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 currLetter.add("long");
                 letter = translation.Translate(currLetter);
-                mUserMessage.setText(letter);
+                allLetters[letterTracker] = letter;
+                mUserMessage.setText(Arrays.toString(allLetters));
             }
         });
+
+        mSpacebar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                letterTracker++;
+                currLetter.clear();
+                letter = "";
+            }
+        });
+
+
 
 
 //   **** Make send button to be initially not clickable and when there is correct mores code, make button clickable
@@ -107,8 +119,6 @@ public class MainActivity extends AppCompatActivity {
                 DatabaseReference message_root = myRef.child(temp_key);
                 Map<String, Object> map2 = new HashMap<String, Object>();
 
-//                String message = mUserMessage.getText().toString();
-
                 DateFormat dateFormat = new SimpleDateFormat("EE hh:mm a");
                 Date date = new Date();
                 String currDate = dateFormat.format(date);
@@ -117,12 +127,12 @@ public class MainActivity extends AppCompatActivity {
                 if (user != null) {
                     currUser = user.getEmail();
                     map2.put("Username", currUser);
-                    map2.put("Message","TEST");
+                    map2.put("Message", Arrays.toString(allLetters));
                     map2.put("DateSent", currDate);
 //                    Adds message to database
                     message_root.updateChildren(map2);
+                    letterTracker = 0;
                 }
-//                mUserMessage.setText("");
             }
         });
 
