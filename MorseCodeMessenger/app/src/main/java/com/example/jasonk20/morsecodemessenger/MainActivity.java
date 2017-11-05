@@ -24,6 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
     private Button mSend_Btn;
-//    private EditText mUserMessage;
+    private TextView mUserMessage;
     private String temp_key;
     private TextView mMessage;
     private Toolbar mToolbar;
@@ -46,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     private Button mDot;
     private Button mDash;
     private Button mSpace;
+    private ArrayList<String> currLetter = new ArrayList<String>();
+    private String letter;
+    private Translation translation = new Translation();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
 
-//        mUserMessage = (EditText) findViewById(R.id.userMessage_ET);
+        mUserMessage = (TextView) findViewById(R.id.userMessage_TV);
         mMessage = (TextView) findViewById(R.id.chatMessage);
 
         mToolbar = (Toolbar) findViewById(R.id.my_Toolbar);
@@ -67,9 +71,29 @@ public class MainActivity extends AppCompatActivity {
         mDash = (Button) findViewById(R.id.dash_Btn);
         mSpace = (Button) findViewById(R.id.spacebar_Btn);
 
+
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("Messages");
+
+
+        mDot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                currLetter.add("short");
+                letter = translation.Translate(currLetter);
+                mUserMessage.setText(letter);
+            }
+        });
+
+        mDash.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                currLetter.add("long");
+                letter = translation.Translate(currLetter);
+                mUserMessage.setText(letter);
+            }
+        });
 
 
 //   **** Make send button to be initially not clickable and when there is correct mores code, make button clickable
@@ -82,7 +106,9 @@ public class MainActivity extends AppCompatActivity {
 
                 DatabaseReference message_root = myRef.child(temp_key);
                 Map<String, Object> map2 = new HashMap<String, Object>();
+
 //                String message = mUserMessage.getText().toString();
+
                 DateFormat dateFormat = new SimpleDateFormat("EE hh:mm a");
                 Date date = new Date();
                 String currDate = dateFormat.format(date);
