@@ -16,10 +16,13 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/Theme.AppCompat.Light" />
 
+    
     <ScrollView
         android:id="@+id/my_ScrollView"
         android:layout_width="match_parent"
-        android:layout_height="437dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
         <TextView
             android:id="@+id/chatMessage"
             android:layout_width="match_parent"
@@ -35,77 +38,44 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
         android:orientation="horizontal"
-        android:paddingRight="5dp"
-        android:paddingLeft="5dp">
+        android:layout_marginBottom="5dp">
 
-        <RelativeLayout
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1">
-            <ImageButton
-                android:layout_width="40dip"
-                android:layout_height="40dip"
-                android:id="@+id/backspace_Btn"
+            android:id="@+id/backspace_Btn"
+            android:layout_weight="1"
+            android:text="Del"/>
 
-                android:background="@drawable/backspace_icon"/>
-            </RelativeLayout>
-
-
-       <RelativeLayout
+       <Button
+           android:id="@+id/dot_Btn"
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
            android:layout_weight="1"
-           android:layout_gravity="center">
+           android:text="Dot"/>
 
-           <ImageButton
-               android:id="@+id/short_Btn"
-               android:layout_width="50dip"
-               android:layout_height="50dip"
-               android:background="@drawable/dot_icon" />
-       </RelativeLayout>
-
-        <RelativeLayout
+        <Button
+            android:id="@+id/dash_Btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_gravity="center">
-            <ImageButton
-                android:id="@+id/long_Btn"
-                android:layout_width="50dip"
-                android:layout_height="50dip"
-                android:background="@drawable/dash_icon" />
-        </RelativeLayout>
+            android:text="Dash"/>
 
-
-        <RelativeLayout
+        <Button
+            android:id="@+id/spacebar_Btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_gravity="center">
-            <ImageButton
-                android:layout_width="50dip"
-                android:layout_height="50dip"
-                android:background="@drawable/spacebar_icon"
-                android:layout_gravity="center"
-                android:id="@+id/spacebar_Btn"/>
-        </RelativeLayout>
+            android:text="Spc"/>
 
-        <RelativeLayout
+        <Button
+            android:id="@+id/send_Btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_gravity="center">
-            <ImageButton
-                android:layout_width="40dip"
-                android:layout_height="40dip"
-                android:background="@drawable/send_icon"
-                android:id="@+id/send_Btn"/>
-        </RelativeLayout>
+            android:text="Send"/>
 
     </LinearLayout>
-
 
 </LinearLayout>

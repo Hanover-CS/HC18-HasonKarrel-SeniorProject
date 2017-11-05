@@ -37,15 +37,15 @@ public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth.AuthStateListener mAuthListener;
     private FirebaseAuth mAuth;
-    private ImageButton mSend_Btn;
+    private Button mSend_Btn;
 //    private EditText mUserMessage;
     private String temp_key;
     private TextView mMessage;
     private Toolbar mToolbar;
-    private ImageButton mBackSpace;
-    private ImageButton mDot;
-    private ImageButton mDash;
-    private ImageButton mSpace;
+    private Button mBackSpace;
+    private Button mDot;
+    private Button mDash;
+    private Button mSpace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,11 +61,11 @@ public class MainActivity extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.my_Toolbar);
         setSupportActionBar(mToolbar);
 
-        mSend_Btn = (ImageButton) findViewById(R.id.send_Btn);
-        mBackSpace = (ImageButton) findViewById(R.id.backspace_Btn);
-        mDot = (ImageButton) findViewById(R.id.short_Btn);
-        mDash = (ImageButton) findViewById(R.id.long_Btn);
-        mSpace = (ImageButton) findViewById(R.id.spacebar_Btn);
+        mSend_Btn = (Button) findViewById(R.id.send_Btn);
+        mBackSpace = (Button) findViewById(R.id.backspace_Btn);
+        mDot = (Button) findViewById(R.id.dot_Btn);
+        mDash = (Button) findViewById(R.id.dash_Btn);
+        mSpace = (Button) findViewById(R.id.spacebar_Btn);
 
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -90,8 +90,8 @@ public class MainActivity extends AppCompatActivity {
                 String currUser;
                 if (user != null) {
                     currUser = user.getEmail();
-                    map2.put("UserName", currUser);
-                    map2.put("Message", message);
+                    map2.put("Username", currUser);
+                    map2.put("Message","TEST");
                     map2.put("DateSent", currDate);
 //                    Adds message to database
                     message_root.updateChildren(map2);
