@@ -114,10 +114,10 @@ public class MainActivity extends AppCompatActivity {
         mSend_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//
-//                if (allLetters[0] == null) {
-//                    Toast.makeText(MainActivity.this,"No Morse made yet", Toast.LENGTH_LONG).show();
-//                } else {
+
+                if (allLetters[0] == null || allLetters[0] == "") {
+                    Toast.makeText(MainActivity.this,"No Message Created", Toast.LENGTH_LONG).show();
+                } else {
 
                     Map<String, Object> map = new HashMap<String, Object>();
                     temp_key = myRef.push().getKey();
@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                         clearLetterArr();
                     }
                 }
-//            }
+            }
         });
 
 
