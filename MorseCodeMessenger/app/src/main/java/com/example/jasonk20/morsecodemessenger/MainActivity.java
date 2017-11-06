@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 letterTracker++;
+                allLetters[letterTracker] = " ";
                 currLetter.clear();
                 letter = "";
             }
@@ -113,38 +114,50 @@ public class MainActivity extends AppCompatActivity {
         mSend_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Map<String, Object> map = new HashMap<String, Object>();
-                temp_key = myRef.push().getKey();
-                myRef.updateChildren(map);
+//
+//                if (allLetters[0] == null) {
+//                    Toast.makeText(MainActivity.this,"No Morse made yet", Toast.LENGTH_LONG).show();
+//                } else {
 
-                DatabaseReference message_root = myRef.child(temp_key);
-                Map<String, Object> map2 = new HashMap<String, Object>();
+                    Map<String, Object> map = new HashMap<String, Object>();
+                    temp_key = myRef.push().getKey();
+                    myRef.updateChildren(map);
 
-                DateFormat dateFormat = new SimpleDateFormat("EE hh:mm a");
-                Date date = new Date();
-                String currDate = dateFormat.format(date);
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                String currUser;
+                    DatabaseReference message_root = myRef.child(temp_key);
+                    Map<String, Object> map2 = new HashMap<String, Object>();
 
-                ArrayList<String> englishMessage = new ArrayList<String>();
-                for (int i = 0; i < allLetters.length; i++) {
-                    if (allLetters[i] != null) {
-                        englishMessage.add(allLetters[i]);
-                    } else {
-                        break;
+                    DateFormat dateFormat = new SimpleDateFormat("EE hh:mm a");
+                    Date date = new Date();
+                    String currDate = dateFormat.format(date);
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    String currUser;
+
+                    String englishMessage = "";
+                    String temp;
+
+                    for (int i = 0; i < allLetters.length; i++) {
+                        if (allLetters[i] != null) {
+                            temp = englishMessage;
+                            englishMessage = temp + allLetters[i];
+                        } else {
+                            break;
+                        }
+                    }
+
+                    if (user != null) {
+                        currUser = user.getEmail();
+                        map2.put("Username", currUser);
+                        map2.put("Message", englishMessage.toString());
+                        map2.put("DateSent", currDate);
+//                    Adds message to database
+                        message_root.updateChildren(map2);
+                        letterTracker = 0;
+                        currLetter.clear();
+                        letter = "";
+                        clearLetterArr();
                     }
                 }
-
-                if (user != null) {
-                    currUser = user.getEmail();
-                    map2.put("Username", currUser);
-                    map2.put("Message", englishMessage.toString());
-                    map2.put("DateSent", currDate);
-//                    Adds message to database
-                    message_root.updateChildren(map2);
-                    letterTracker = 0;
-                }
-            }
+//            }
         });
 
 
@@ -175,6 +188,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void clearLetterArr() {
+        for (int i =0; i < allLetters.length; i++){
+            if (allLetters[i] != null) {
+                allLetters[i] = "";
+            } else {
+                break;
+            }
+        }
     }
 
     private String message, date, user;
