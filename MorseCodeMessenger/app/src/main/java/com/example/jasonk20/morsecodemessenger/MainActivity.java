@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
@@ -47,9 +48,13 @@ public class MainActivity extends AppCompatActivity {
     private Button mSpacebar;
     private ArrayList<String> currLetter = new ArrayList<String>();
     private String[] allLetters = new String[20];
+    private String[] morseCodeArr = new String[20];
     private int letterTracker = 0;
+    private int morseTracker = 0;
     private String letter;
     private Translation translation = new Translation();
+    private ScrollView scrollView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         mDot = (Button) findViewById(R.id.dot_Btn);
         mDash = (Button) findViewById(R.id.dash_Btn);
         mSpacebar = (Button) findViewById(R.id.spacebar_Btn);
+        scrollView = (ScrollView) findViewById(R.id.my_ScrollView);
 
 
         // Write a message to the database
@@ -83,7 +89,10 @@ public class MainActivity extends AppCompatActivity {
                 currLetter.add("short");
                 letter = translation.Translate(currLetter);
                 allLetters[letterTracker] = letter;
-                mUserMessage.setText(Arrays.toString(allLetters));
+                morseCodeArr[morseTracker] = ".";
+                morseTracker++;
+                mUserMessage.setText(Arrays.toString(morseCodeArr));
+//                mUserMessage.setText(Arrays.toString(allLetters));
             }
         });
 
@@ -93,7 +102,10 @@ public class MainActivity extends AppCompatActivity {
                 currLetter.add("long");
                 letter = translation.Translate(currLetter);
                 allLetters[letterTracker] = letter;
-                mUserMessage.setText(Arrays.toString(allLetters));
+                morseCodeArr[morseTracker] = "-";
+                morseTracker++;
+                mUserMessage.setText(Arrays.toString(morseCodeArr));
+//                mUserMessage.setText(Arrays.toString(allLetters));
             }
         });
 
@@ -102,6 +114,8 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 letterTracker++;
                 allLetters[letterTracker] = " ";
+                morseCodeArr[morseTracker]= " ";
+                morseTracker++;
                 currLetter.clear();
                 letter = "";
             }
@@ -110,12 +124,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//   **** Make send button to be initially not clickable and when there is correct mores code, make button clickable
         mSend_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                if (allLetters[0] == null || allLetters[0] == "") {
+                if (allLetters[0] == null) {
                     Toast.makeText(MainActivity.this,"No Message Created", Toast.LENGTH_LONG).show();
                 } else {
 
@@ -152,9 +165,12 @@ public class MainActivity extends AppCompatActivity {
 //                    Adds message to database
                         message_root.updateChildren(map2);
                         letterTracker = 0;
+                        morseTracker = 0;
                         currLetter.clear();
                         letter = "";
                         clearLetterArr();
+                        clearMorseArr();
+                        mUserMessage.setText("");
                     }
                 }
             }
@@ -200,9 +216,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void clearMorseArr() {
+        for (int i =0; i < morseCodeArr.length; i++){
+            if (morseCodeArr[i] != null) {
+                morseCodeArr[i] = "";
+            } else {
+                break;
+            }
+        }
+    }
+
     private String message, date, user;
 
-
+//  Adds messages to scroll view
     private void add_Message(DataSnapshot dataSnapshot) {
         Iterator i = dataSnapshot.getChildren().iterator();
         while (i.hasNext()) {
@@ -210,8 +236,10 @@ public class MainActivity extends AppCompatActivity {
             message  = (String) ((DataSnapshot)i.next()).getValue();
             date = (String) ((DataSnapshot)i.next()).getValue();
 
-            mMessage.append(user + " : " + message + " : " + date + " \n");
+            mMessage.append(user + "\n " + date + "\n" + message + "\n");
+            mMessage.append("\n");
         }
+        scrollViewDown();
     }
 
     @Override
@@ -223,7 +251,18 @@ public class MainActivity extends AppCompatActivity {
         if(currUser == null) {
             sendToLogin();
         }
+        scrollViewDown();
     }
+
+    private void scrollViewDown() {
+        scrollView.post(new Runnable() {
+            @Override
+            public void run() {
+                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
+    }
+
     private void sendToLogin() {
         Intent intent = new Intent(MainActivity.this, LoginActivity.class);
         startActivity(intent);
@@ -254,4 +293,5 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
 }
