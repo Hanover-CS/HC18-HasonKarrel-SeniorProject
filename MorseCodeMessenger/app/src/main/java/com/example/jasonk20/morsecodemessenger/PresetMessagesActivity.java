@@ -41,12 +41,13 @@ public class PresetMessagesActivity extends AppCompatActivity {
                 spinnerItem = mSpinner.getSelectedItem().toString();
                 userInputMessage = mPresetMessage.getText().toString();
 
-                if (userInputMessage != null) {
+                if (!(mPresetMessage.getText().toString().equals(""))) {
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putString(spinnerItem, userInputMessage);
                     editor.commit();
-                    Toast.makeText(PresetMessagesActivity.this, spinnerItem,Toast.LENGTH_SHORT).show();
+                    mPresetMessage.setText("");
+                    Toast.makeText(PresetMessagesActivity.this, "Preset Message Set",Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(PresetMessagesActivity.this, "Nothing Entered",Toast.LENGTH_SHORT).show();
 
