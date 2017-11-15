@@ -1,6 +1,8 @@
 package com.example.jasonk20.morsecodemessenger;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -157,6 +159,11 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
+                    if (englishMessage.equals("1") || englishMessage.equals("2") ||
+                            englishMessage.equals("3") || englishMessage.equals("4") || englishMessage.equals("5")) {
+                        englishMessage = getPresetMessage(englishMessage);
+                    }
+
                     if (user != null) {
                         currUser = user.getEmail();
                         map2.put("Username", currUser);
@@ -204,6 +211,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private String getPresetMessage(String englishMessage) {
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String message = sharedPref.getString(englishMessage, "");
+
+//        Toast.makeText(MainActivity.this,message,Toast.LENGTH_SHORT).show();
+
+
+        return message;
     }
 
     private void clearLetterArr() {

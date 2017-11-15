@@ -1,5 +1,8 @@
 package com.example.jasonk20.morsecodemessenger;
 
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +42,11 @@ public class Translation {
     private ArrayList<String> x = new ArrayList<String>();
     private ArrayList<String> y = new ArrayList<String>();
     private ArrayList<String> z = new ArrayList<String>();
+    private ArrayList<String> one = new ArrayList<String>();
+    private ArrayList<String> two = new ArrayList<String>();
+    private ArrayList<String> three = new ArrayList<String>();
+    private ArrayList<String> four = new ArrayList<String>();
+    private ArrayList<String> five = new ArrayList<String>();
     
 
    public Translation() {
@@ -151,6 +159,36 @@ public class Translation {
        z.add("short");
        z.add("short");
 
+       one.add("short");
+       one.add("long");
+       one.add("long");
+       one.add("long");
+       one.add("long");
+
+       two.add("short");
+       two.add("short");
+       two.add("long");
+       two.add("long");
+       two.add("long");
+
+       three.add("short");
+       three.add("short");
+       three.add("short");
+       three.add("long");
+       three.add("long");
+
+       four.add("short");
+       four.add("short");
+       four.add("short");
+       four.add("short");
+       four.add("long");
+
+       five.add("short");
+       five.add("short");
+       five.add("short");
+       five.add("short");
+       five.add("short");
+
        letters.put("A", a);
        letters.put("B", b);
        letters.put("C", c);
@@ -177,6 +215,11 @@ public class Translation {
        letters.put("X", x);
        letters.put("Y", y);
        letters.put("Z", z);
+       letters.put("1", one);
+       letters.put("2", two);
+       letters.put("3", three);
+       letters.put("4", four);
+       letters.put("5", five);
     }
 
     public String Translate(ArrayList arrayList) {
