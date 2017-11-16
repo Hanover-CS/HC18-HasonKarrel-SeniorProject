@@ -159,9 +159,14 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
+                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+                    String sosOn_or_Off = sharedPref.getString("SOS Functionality","");
+
                     if (englishMessage.equals("1") || englishMessage.equals("2") ||
                             englishMessage.equals("3") || englishMessage.equals("4") || englishMessage.equals("5")) {
                         englishMessage = getPresetMessage(englishMessage);
+                    } else if (englishMessage.equals("SOS") && sosOn_or_Off.equals("ON")) {
+                        englishMessage = sosMessage();
                     }
 
                     if (user != null) {
@@ -211,6 +216,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private String sosMessage() {
+//        GET CURRENT LOCATION
+        String sosTempMessage = "Help Im in trouble and need assistance, heres my location";
+        return sosTempMessage;
     }
 
     private String getPresetMessage(String englishMessage) {

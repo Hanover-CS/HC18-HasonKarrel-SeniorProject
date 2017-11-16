@@ -12,13 +12,14 @@ import android.widget.Switch;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class Settings extends AppCompatActivity {
 
     private Button mLogOut;
     private FirebaseAuth mAuth;
     private Button mPreset_Btn;
-    private Switch mCurrLocation_Swtich;
+    private Switch mCurrLocation_Switch;
 
 
     @Override
@@ -29,7 +30,7 @@ public class Settings extends AppCompatActivity {
         mLogOut = (Button) findViewById(R.id.logOut_Btn);
         mAuth = FirebaseAuth.getInstance();
         mPreset_Btn = (Button) findViewById(R.id.preset_Btn);
-        mCurrLocation_Swtich = (Switch) findViewById(R.id.currLocation_Switch);
+        mCurrLocation_Switch = (Switch) findViewById(R.id.currLocation_Switch);
 
         mLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +50,8 @@ public class Settings extends AppCompatActivity {
             }
         });
 
-        mCurrLocation_Swtich.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        mCurrLocation_Switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
@@ -58,13 +60,25 @@ public class Settings extends AppCompatActivity {
                 if (isChecked) {
                     editor.putString("SOS Functionality", "ON");
                     editor.commit();
-                    Toast.makeText(Settings.this, "Toggle Switch ON",Toast.LENGTH_SHORT).show();
                 } else {
                     editor.putString("SOS Functionality", "OFF");
                     editor.commit();
-                    Toast.makeText(Settings.this, "Toggle Switch OFF",Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String sosOn_or_Off = sharedPref.getString("SOS Functionality","");
+        if (sosOn_or_Off.equals("ON")) {
+            mCurrLocation_Switch.setChecked(true);
+        }else {
+            mCurrLocation_Switch.setChecked(false);
+        }
+    }
+
+
 }
