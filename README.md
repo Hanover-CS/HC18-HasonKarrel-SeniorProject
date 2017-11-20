@@ -1,6 +1,6 @@
 # Morse Code Messenger
 
-Morse Code Messenger is an Android group chat application which gives users the functionality to send full-text Enlgish mesegaes in real-time to all your friends through tapping Morse code. 
+Morse Code Messenger is an Android group chat application which gives users the functionality to send full-text Enlgish messages in real-time to all your friends through tapping Morse code. 
 
 ## Motivation
 
