@@ -1,10 +1,22 @@
 package com.example.jasonk20.morsecodemessenger;
 
+import android.*;
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
+import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,6 +26,7 @@ import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderApi;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,6 +44,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 
@@ -56,12 +70,16 @@ public class MainActivity extends AppCompatActivity {
     private String letter;
     private Translation translation = new Translation();
     private ScrollView scrollView;
-
+    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
+    private double lat;
+    private double lang;
+    private String latLang;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -116,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 letterTracker++;
                 allLetters[letterTracker] = " ";
-                morseCodeArr[morseTracker]= " ";
+                morseCodeArr[morseTracker] = " ";
                 morseTracker++;
                 currLetter.clear();
                 letter = "";
@@ -124,14 +142,12 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
         mSend_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 if (allLetters[0] == null) {
-                    Toast.makeText(MainActivity.this,"No Message Created", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "No Message Created", Toast.LENGTH_LONG).show();
                 } else {
 
                     Map<String, Object> map = new HashMap<String, Object>();
@@ -160,12 +176,13 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    String sosOn_or_Off = sharedPref.getString("SOS Functionality","");
+                    String sosOn_or_Off = sharedPref.getString("SOS Functionality", "");
 
                     if (englishMessage.equals("1") || englishMessage.equals("2") ||
                             englishMessage.equals("3") || englishMessage.equals("4") || englishMessage.equals("5")) {
                         englishMessage = getPresetMessage(englishMessage);
                     } else if (englishMessage.equals("SOS") && sosOn_or_Off.equals("ON")) {
+                        Location();
                         englishMessage = sosMessage();
                     }
 
@@ -220,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String sosMessage() {
 //        GET CURRENT LOCATION
-        String sosTempMessage = "Help Im in trouble and need assistance, heres my location";
+        String sosTempMessage = "Help Im in trouble and need assistance, heres my location" + " " + latLang;
         return sosTempMessage;
     }
 
@@ -235,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void clearLetterArr() {
-        for (int i =0; i < allLetters.length; i++){
+        for (int i = 0; i < allLetters.length; i++) {
             if (allLetters[i] != null) {
                 allLetters[i] = "";
             } else {
@@ -245,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void clearMorseArr() {
-        for (int i =0; i < morseCodeArr.length; i++){
+        for (int i = 0; i < morseCodeArr.length; i++) {
             if (morseCodeArr[i] != null) {
                 morseCodeArr[i] = "";
             } else {
@@ -256,13 +273,13 @@ public class MainActivity extends AppCompatActivity {
 
     private String message, date, user;
 
-//  Adds messages to scroll view
+    //  Adds messages to scroll view
     private void add_Message(DataSnapshot dataSnapshot) {
         Iterator i = dataSnapshot.getChildren().iterator();
         while (i.hasNext()) {
-            user = (String) ((DataSnapshot)i.next()).getValue();
-            message  = (String) ((DataSnapshot)i.next()).getValue();
-            date = (String) ((DataSnapshot)i.next()).getValue();
+            user = (String) ((DataSnapshot) i.next()).getValue();
+            message = (String) ((DataSnapshot) i.next()).getValue();
+            date = (String) ((DataSnapshot) i.next()).getValue();
 
             mMessage.append(user + "\n " + date + "\n" + message + "\n");
             mMessage.append("\n");
@@ -276,11 +293,84 @@ public class MainActivity extends AppCompatActivity {
         //Checks if user is signed in
         FirebaseUser currUser = mAuth.getCurrentUser();
         //Takes you to sign in activity from the function below
-        if(currUser == null) {
+        if (currUser == null) {
             sendToLogin();
         }
         scrollViewDown();
+
+        checkAndRequestPermissions();
     }
+
+    private boolean checkAndRequestPermissions() {
+        int internet = ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET);
+        int storage = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int storage1 = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        int loc = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        int loc2 = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+
+        if (internet != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.CAMERA);
+        }
+        if (storage != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (storage1 != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (loc2 != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
+        }
+        if (loc != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.ACCESS_COARSE_LOCATION);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray
+                    (new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+            return false;
+        }
+        return true;
+    }
+
+    private void Location() {
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,2000,10,locationListener);
+
+
+        } else {
+            checkAndRequestPermissions();
+        }
+    }
+
+    LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(android.location.Location location) {
+            lat = location.getLatitude();
+            lang = location.getLongitude();
+            latLang = "New Latitude: "+lat + "New Longitude: "+lang;
+            Toast.makeText(MainActivity.this,latLang,Toast.LENGTH_LONG).show();
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+
 
     private void scrollViewDown() {
         scrollView.post(new Runnable() {
