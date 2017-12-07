@@ -182,7 +182,6 @@ public class MainActivity extends AppCompatActivity {
                             englishMessage.equals("3") || englishMessage.equals("4") || englishMessage.equals("5")) {
                         englishMessage = getPresetMessage(englishMessage);
                     } else if (englishMessage.equals("SOS") && sosOn_or_Off.equals("ON")) {
-                        Location();
                         englishMessage = sosMessage();
                     }
 
@@ -237,7 +236,12 @@ public class MainActivity extends AppCompatActivity {
 
     private String sosMessage() {
 //        GET CURRENT LOCATION
+
+        Location();
         String sosTempMessage = "Help Im in trouble and need assistance, heres my location" + " " + latLang;
+
+        
+
         return sosTempMessage;
     }
 
@@ -299,6 +303,7 @@ public class MainActivity extends AppCompatActivity {
         scrollViewDown();
 
         checkAndRequestPermissions();
+        Location();
     }
 
     private boolean checkAndRequestPermissions() {
