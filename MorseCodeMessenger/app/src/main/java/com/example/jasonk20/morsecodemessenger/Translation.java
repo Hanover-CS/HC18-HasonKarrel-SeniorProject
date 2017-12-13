@@ -1,7 +1,9 @@
 package com.example.jasonk20.morsecodemessenger;
 
 import android.content.SharedPreferences;
+import android.location.LocationListener;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -47,6 +49,12 @@ public class Translation {
     private ArrayList<String> three = new ArrayList<String>();
     private ArrayList<String> four = new ArrayList<String>();
     private ArrayList<String> five = new ArrayList<String>();
+
+
+    private ArrayList<String> letterArr = new ArrayList<>();
+    private ArrayList<String> englishArr = new ArrayList<>();
+    private String letter;
+    String message = "";
     
 
    public Translation() {
@@ -220,22 +228,70 @@ public class Translation {
        letters.put("3", three);
        letters.put("4", four);
        letters.put("5", five);
+   }
+
+    public String Translate(ArrayList<String> arrayList) {
+
+       for (int i = 0; i < arrayList.size(); i++) {
+           if (!(arrayList.get(i).equals(" "))) {
+               letterArr.add(arrayList.get(i));
+           }
+           else {
+               englishArr.add(translation(letterArr));
+               englishArr.add(" ");
+               letterArr.clear();
+           }
+       }
+
+       englishArr.add(translation(letterArr));
+       letterArr.clear();
+
+       message = arrayToMessage(englishArr);
+       englishArr.clear();
+
+
+//       letter = translation(letterArr);
+//        englishArr.add(translation(letterArr));
+
+
+
+//        String valueLetter = "";
+//
+//        for(Map.Entry m:letters.entrySet()){
+//
+//
+//            if (m.getValue().equals(arrayList)) {
+//                valueLetter = (String) m.getKey();
+//                break;
+//            }
+//        }
+        return message;
     }
 
-    public String Translate(ArrayList arrayList) {
+    private String arrayToMessage(ArrayList<String> englishArr) {
 
+       String englishMessage = "";
+       String temp;
+        for (int i = 0; i < englishArr.size(); i++) {
 
-        String valueLetter = "";
+            temp = englishMessage;
+            englishMessage = temp + englishArr.get(i);
+        }
+       return englishMessage;
+    }
 
+    public String translation(ArrayList<String> arrayList) {
+
+       String letter = "";
+       
         for(Map.Entry m:letters.entrySet()){
 
-
             if (m.getValue().equals(arrayList)) {
-                valueLetter = (String) m.getKey();
+                letter = (String) m.getKey();
                 break;
             }
         }
-        return valueLetter;
+        return letter;
     }
 
 
