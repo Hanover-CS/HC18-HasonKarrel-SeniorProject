@@ -76,6 +76,10 @@ public class MainActivity extends AppCompatActivity {
     private String latLang;
     private LocationManager lm;
 
+    private String finalMessage = "";
+
+    private ArrayList<String> morseArr = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,67 +111,72 @@ public class MainActivity extends AppCompatActivity {
         mDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                currLetter.add("short");
-                letter = translation.Translate(currLetter);
-                allLetters[letterTracker] = letter;
-                morseCodeArr[morseTracker] = ".";
-                morseTracker++;
-                mUserMessage.setText(Arrays.toString(morseCodeArr));
-//                mUserMessage.setText(Arrays.toString(allLetters));
+//                currLetter.add("short");
+//                letter = translation.Translate(currLetter);
+//                allLetters[letterTracker] = letter;
+//                morseCodeArr[morseTracker] = ".";
+//                morseTracker++;
+//                mUserMessage.setText(Arrays.toString(morseCodeArr));
+////                mUserMessage.setText(Arrays.toString(allLetters));
+
+                morseArr.add("short");
+
             }
         });
 
         mDash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                currLetter.add("long");
-                letter = translation.Translate(currLetter);
-                allLetters[letterTracker] = letter;
-                morseCodeArr[morseTracker] = "-";
-                morseTracker++;
-                mUserMessage.setText(Arrays.toString(morseCodeArr));
-//                mUserMessage.setText(Arrays.toString(allLetters));
+//                currLetter.add("long");
+//                letter = translation.Translate(currLetter);
+//                allLetters[letterTracker] = letter;
+//                morseCodeArr[morseTracker] = "-";
+//                morseTracker++;
+//                mUserMessage.setText(Arrays.toString(morseCodeArr));
+////                mUserMessage.setText(Arrays.toString(allLetters));
+
+                morseArr.add("long");
             }
         });
 
         mSpacebar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                letterTracker++;
-                allLetters[letterTracker] = " ";
-                morseCodeArr[morseTracker] = " ";
-                morseTracker++;
-                currLetter.clear();
-                letter = "";
+
+                morseArr.add(" ");
             }
         });
 
         mBackSpace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                allLetters[letterTracker] = "";
-//                letterTracker--;
-                morseTracker--;
-                morseCodeArr[morseTracker] = "";
-                if (currLetter.size() > 0) {
-                    currLetter.remove(currLetter.size()-1);
-                } else {
-                    currLetter.clear();
-                    allLetters[letterTracker-1] = "";
-                    for (int i = 0; i < morseTracker; i++) {
+////                allLetters[letterTracker] = "";
+////                letterTracker--;
+//                morseTracker--;
+//                morseCodeArr[morseTracker] = "";
+//                if (currLetter.size() > 0) {
+//                    currLetter.remove(currLetter.size()-1);
+//                } else {
+//                    currLetter.clear();
+//                    allLetters[letterTracker-1] = "";
+//                    for (int i = 0; i < morseTracker; i++) {
+//
+//                        if (morseCodeArr[i].equals(".")) {
+//                            currLetter.add("short");
+//
+//                        } else if( morseCodeArr[i].equals("-")) {
+//                            currLetter.add("long");
+//                        }
+//                    }
+//                }
+//
+//                letter = translation.Translate(currLetter);
+//                allLetters[letterTracker] = letter;
+//                mUserMessage.setText(Arrays.toString(morseCodeArr));
 
-                        if (morseCodeArr[i].equals(".")) {
-                            currLetter.add("short");
-
-                        } else if( morseCodeArr[i].equals("-")) {
-                            currLetter.add("long");
-                        }
-                    }
+                if (morseArr.size() > 0) {
+                    morseArr.remove(morseArr.size()-1);
                 }
-
-                letter = translation.Translate(currLetter);
-                allLetters[letterTracker] = letter;
-                mUserMessage.setText(Arrays.toString(morseCodeArr));
 
             }
         });
@@ -177,7 +186,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                if (allLetters[0] == null) {
+
+                finalMessage = translation.Translate(morseArr);
+                morseArr.clear();
+
+                if (finalMessage == null || finalMessage == "") {
                     Toast.makeText(MainActivity.this, "No Message Created", Toast.LENGTH_LONG).show();
                 } else {
 
@@ -194,42 +207,42 @@ public class MainActivity extends AppCompatActivity {
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     String currUser;
 
-                    String englishMessage = "";
-                    String temp;
+//                    String englishMessage = "";
+//                    String temp;
 
-                    for (int i = 0; i < allLetters.length; i++) {
-                        if (allLetters[i] != null) {
-                            temp = englishMessage;
-                            englishMessage = temp + allLetters[i];
-                        } else {
-                            break;
-                        }
-                    }
+//                    for (int i = 0; i < allLetters.length; i++) {
+//                        if (allLetters[i] != null) {
+//                            temp = englishMessage;
+//                            englishMessage = temp + allLetters[i];
+//                        } else {
+//                            break;
+//                        }
+//                    }
 
                     SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                     String sosOn_or_Off = sharedPref.getString("SOS Functionality", "");
 
-                    if (englishMessage.equals("1") || englishMessage.equals("2") ||
-                            englishMessage.equals("3") || englishMessage.equals("4") || englishMessage.equals("5")) {
-                        englishMessage = getPresetMessage(englishMessage);
-                    } else if (englishMessage.equals("SOS") && sosOn_or_Off.equals("ON")) {
-                        englishMessage = sosMessage();
+                    if (finalMessage.equals("1") || finalMessage.equals("2") ||
+                            finalMessage.equals("3") || finalMessage.equals("4") || finalMessage.equals("5")) {
+                        finalMessage = getPresetMessage(finalMessage);
+                    } else if (finalMessage.equals("S O S") && sosOn_or_Off.equals("ON")) {
+                        finalMessage = sosMessage();
                     }
 
                     if (user != null) {
                         currUser = user.getEmail();
                         map2.put("Username", currUser);
-                        map2.put("Message", englishMessage.toString());
+                        map2.put("Message", finalMessage);
                         map2.put("DateSent", currDate);
 //                    Adds message to database
                         message_root.updateChildren(map2);
-                        letterTracker = 0;
-                        morseTracker = 0;
-                        currLetter.clear();
-                        letter = "";
-                        clearLetterArr();
-                        clearMorseArr();
-                        mUserMessage.setText("");
+//                        letterTracker = 0;
+//                        morseTracker = 0;
+//                        currLetter.clear();
+//                        letter = "";
+//                        clearLetterArr();
+//                        clearMorseArr();
+//                        mUserMessage.setText("");
                     }
                 }
             }
@@ -395,7 +408,7 @@ public class MainActivity extends AppCompatActivity {
             lat = location.getLatitude();
             lang = location.getLongitude();
             latLang = "New Latitude: "+lat + "New Longitude: "+lang;
-            Toast.makeText(MainActivity.this,latLang,Toast.LENGTH_LONG).show();
+//            Toast.makeText(MainActivity.this,latLang,Toast.LENGTH_LONG).show();
         }
 
         @Override
