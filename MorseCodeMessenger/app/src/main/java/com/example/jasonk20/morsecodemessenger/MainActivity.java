@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private double lat;
     private double lang;
     private String latLang;
+    private LocationManager lm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -138,6 +139,36 @@ public class MainActivity extends AppCompatActivity {
                 morseTracker++;
                 currLetter.clear();
                 letter = "";
+            }
+        });
+
+        mBackSpace.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                allLetters[letterTracker] = "";
+//                letterTracker--;
+                morseTracker--;
+                morseCodeArr[morseTracker] = "";
+                if (currLetter.size() > 0) {
+                    currLetter.remove(currLetter.size()-1);
+                } else {
+                    currLetter.clear();
+                    allLetters[letterTracker-1] = "";
+                    for (int i = 0; i < morseTracker; i++) {
+
+                        if (morseCodeArr[i].equals(".")) {
+                            currLetter.add("short");
+
+                        } else if( morseCodeArr[i].equals("-")) {
+                            currLetter.add("long");
+                        }
+                    }
+                }
+
+                letter = translation.Translate(currLetter);
+                allLetters[letterTracker] = letter;
+                mUserMessage.setText(Arrays.toString(morseCodeArr));
+
             }
         });
 
@@ -306,6 +337,14 @@ public class MainActivity extends AppCompatActivity {
         Location();
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        lm.removeUpdates(locationListener);
+        lm = null;
+
+    }
+
     private boolean checkAndRequestPermissions() {
         int internet = ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET);
         int storage = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -341,7 +380,7 @@ public class MainActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
 
-            LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,2000,10,locationListener);
 
 
