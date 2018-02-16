@@ -23,6 +23,16 @@ Morse Code Messenger is an Android group chat application which gives users the 
 	* Validation request to Firebase to check user’s sign in input
 	* Current user authentication listener
 
+### Chat Room Activity
+
+* Front End: 
+	* List view of all current chat rooms available
+	* Able to add new chat rooms to the list
+* Back End: 
+	* Firebase Realtime Database
+	* Event listener to read and update in real-time from database to populate list view
+	* Method to push data to database for adding chatrooms
+
 ### Main Activity
 
 * Front End:
@@ -30,8 +40,6 @@ Morse Code Messenger is an Android group chat application which gives users the 
 	* List view with the message, user who sent the message, and time it was sent
 * Back end:
 	* Firebase Realtime Database
-	* Instance of FirebaseDatabase
-	* Reference pointing to the database
 	* Appropriate message structure in JSON stored in database
 	* Event listener to read and update in real-time from database
 	* Method to push data to database for sending messages
