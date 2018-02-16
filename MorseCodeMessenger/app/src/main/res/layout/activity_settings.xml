@@ -4,8 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#5b5b5b"
     android:orientation="vertical"
     tools:context="com.example.jasonk20.morsecodemessenger.Settings">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/settings_Toolbar"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:background="#5b5b5b"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/Theme.AppCompat.Light" />
 
     <Button
         android:id="@+id/logOut_Btn"
@@ -19,9 +29,9 @@
     <Button
         android:id="@+id/preset_Btn"
         android:layout_width="wrap_content"
-        android:layout_gravity="center"
         android:layout_height="wrap_content"
-        android:text="Pre-set Messages"/>
+        android:layout_gravity="center"
+        android:text="Pre-set Messages" />
 
     <Switch
         android:id="@+id/currLocation_Switch"
@@ -29,5 +39,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:text="SOS Functionality" />
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:text="SOS Functionality"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
+
 </LinearLayout>

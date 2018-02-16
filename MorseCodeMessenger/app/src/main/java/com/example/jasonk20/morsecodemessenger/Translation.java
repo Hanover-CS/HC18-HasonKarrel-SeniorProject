@@ -53,7 +53,6 @@ public class Translation {
 
     private ArrayList<String> letterArr = new ArrayList<>();
     private ArrayList<String> englishArr = new ArrayList<>();
-    private String letter;
     String message = "";
     
 
@@ -249,22 +248,6 @@ public class Translation {
        message = arrayToMessage(englishArr);
        englishArr.clear();
 
-
-//       letter = translation(letterArr);
-//        englishArr.add(translation(letterArr));
-
-
-
-//        String valueLetter = "";
-//
-//        for(Map.Entry m:letters.entrySet()){
-//
-//
-//            if (m.getValue().equals(arrayList)) {
-//                valueLetter = (String) m.getKey();
-//                break;
-//            }
-//        }
         return message;
     }
 
@@ -293,6 +276,5 @@ public class Translation {
         }
         return letter;
     }
-
 
 }

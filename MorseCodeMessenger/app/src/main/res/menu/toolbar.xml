@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_settings"
-        android:icon="@drawable/settings_icon_48dp"
+        android:icon="@drawable/settingswhite"
         android:title="@string/settings"
         app:showAsAction="ifRoom" />
 

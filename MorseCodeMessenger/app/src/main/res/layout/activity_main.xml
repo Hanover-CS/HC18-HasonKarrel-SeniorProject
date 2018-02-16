@@ -11,35 +11,23 @@
         android:id="@+id/my_Toolbar"
         android:layout_height="?attr/actionBarSize"
         android:layout_width="match_parent"
-        android:background="?attr/colorPrimary"
+        android:background="#5b5b5b"
         android:elevation="4dp"
-        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:popupTheme="@style/Theme.AppCompat.Light" />
 
-    
-    <ScrollView
-        android:id="@+id/my_ScrollView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:background="#5b5b5b">
 
-        <TextView
-            android:id="@+id/chatMessage"
+        <LinearLayout
+            android:id="@+id/linearLL"
+            android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </ScrollView>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/userMessage_TV"
-        android:text="The user's message in Morse code"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="5dp">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="5dp">
 
         <Button
             android:layout_width="wrap_content"
@@ -48,12 +36,12 @@
             android:layout_weight="1"
             android:text="Del"/>
 
-       <Button
-           android:id="@+id/dot_Btn"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:layout_weight="1"
-           android:text="Dot"/>
+        <Button
+            android:id="@+id/dot_Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Dot"/>
 
         <Button
             android:id="@+id/dash_Btn"
@@ -76,6 +64,36 @@
             android:layout_weight="1"
             android:text="Send"/>
 
-    </LinearLayout>
+        </LinearLayout>
+
+        <ListView
+            android:paddingLeft="10dp"
+            android:id="@+id/list_msg"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="false"
+            android:layout_alignParentTop="false"
+            android:layout_marginBottom="20dp"
+            android:layout_above="@+id/userMessage_TV"
+            android:layout_marginTop="10dp"
+            android:listSelector="@android:color/transparent"
+            android:transcriptMode="alwaysScroll"
+            android:stackFromBottom="true"
+            android:divider="@null" />
+
+        <TextView
+            android:paddingLeft="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/userMessage_TV"
+            android:text="Enter message"
+            android:textColor="#fcfcfc"
+            android:textSize="30dp"
+            android:layout_above="@+id/linearLL"
+            android:paddingBottom="20dp"/>
+
+    </RelativeLayout>
+
+
 
 </LinearLayout>

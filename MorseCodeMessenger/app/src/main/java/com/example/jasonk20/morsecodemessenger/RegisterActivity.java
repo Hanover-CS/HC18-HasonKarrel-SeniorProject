@@ -8,6 +8,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -21,6 +24,8 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText regEmail_ET;
     private EditText regPassword_ET;
     private Button reg_Btn;
+    private ImageButton backView;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +35,8 @@ public class RegisterActivity extends AppCompatActivity {
         regEmail_ET = (EditText) findViewById(R.id.registerEmail_ET);
         regPassword_ET = (EditText) findViewById(R.id.register_Password_ET);
         reg_Btn = (Button) findViewById(R.id.register_Btn);
+        backView = (ImageButton) findViewById(R.id.backview);
+        progressBar = (ProgressBar) findViewById(R.id.progressBarReg);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -43,12 +50,21 @@ public class RegisterActivity extends AppCompatActivity {
                 if(email.length() == 0 || password.length() == 0) {
                     Toast.makeText(RegisterActivity.this, "Nothing Entered", Toast.LENGTH_LONG).show();
                 } else {
+                    progressBar.setVisibility(View.VISIBLE);
                     createNewUser(email, password);
                 }
             }
         });
 
+        backView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
+
     }
+
 
 
     private void createNewUser(String email1, String password1) {
@@ -57,15 +73,18 @@ public class RegisterActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
+                        progressBar.setVisibility(View.INVISIBLE);
+
                         if (task.isSuccessful()) {
                             // Sign in success
-                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                            Intent intent = new Intent(RegisterActivity.this, ChatRooms.class);
                             startActivity(intent);
                             finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(RegisterActivity.this, "Could not create new account", Toast.LENGTH_SHORT).show();
                         }
+
                     }
                 });
 

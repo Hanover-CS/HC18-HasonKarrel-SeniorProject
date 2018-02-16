@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.1"
+    buildToolsVersion '26.0.2'
     defaultConfig {
         applicationId "com.example.jasonk20.morsecodemessenger"
         minSdkVersion 21
@@ -28,8 +28,13 @@ dependencies {
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.google.firebase:firebase-auth:10.0.1'
     compile 'com.google.firebase:firebase-database:10.0.1'
+    compile 'com.android.support:design:26.1.0'
+    implementation 'com.google.android.gms:play-services-location:10.0.1'
     testCompile 'junit:junit:4.12'
 }
+
+
+
 
 
 

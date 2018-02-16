@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,7 +22,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
@@ -52,24 +58,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private FirebaseAuth mAuth;
     private Button mSend_Btn;
-    private TextView mUserMessage;
     private String temp_key;
-    private TextView mMessage;
     private Toolbar mToolbar;
     private Button mBackSpace;
     private Button mDot;
     private Button mDash;
     private Button mSpacebar;
-    private ArrayList<String> currLetter = new ArrayList<String>();
-    private String[] allLetters = new String[20];
-    private String[] morseCodeArr = new String[20];
-    private int letterTracker = 0;
-    private int morseTracker = 0;
-    private String letter;
     private Translation translation = new Translation();
-    private ScrollView scrollView;
     public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
     private double lat;
     private double lang;
@@ -77,107 +73,96 @@ public class MainActivity extends AppCompatActivity {
     private LocationManager lm;
 
     private String finalMessage = "";
+    private List<ChatBubble> ChatBubbles;
+    private ArrayAdapter<ChatBubble> adapter;
+    private ListView listView;
+    private TextView userMessageTV;
+    private String sosOn_or_Off;
+    private SharedPreferences sharedPref;
 
     private ArrayList<String> morseArr = new ArrayList<>();
+    private String chatRoomName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ChatBubbles = new ArrayList<>();
+        listView = (ListView) findViewById(R.id.list_msg);
 
-        mAuth = FirebaseAuth.getInstance();
+        //set ListView adapter first
+        adapter = new MessageAdapter(this, R.layout.left_chat_bubble, ChatBubbles);
+        listView.setAdapter(adapter);
+
+        sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
 
-        mUserMessage = (TextView) findViewById(R.id.userMessage_TV);
-        mMessage = (TextView) findViewById(R.id.chatMessage);
+        userMessageTV = (TextView) findViewById(R.id.userMessage_TV);
+
+
+
+
+
+        Bundle extras = getIntent().getExtras();
+        chatRoomName = extras.getString("ChatRoomName");
 
         mToolbar = (Toolbar) findViewById(R.id.my_Toolbar);
         setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle(chatRoomName);
+        mToolbar.setNavigationIcon(R.drawable.arrow_back_white);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
+
 
         mSend_Btn = (Button) findViewById(R.id.send_Btn);
         mBackSpace = (Button) findViewById(R.id.backspace_Btn);
         mDot = (Button) findViewById(R.id.dot_Btn);
         mDash = (Button) findViewById(R.id.dash_Btn);
         mSpacebar = (Button) findViewById(R.id.spacebar_Btn);
-        scrollView = (ScrollView) findViewById(R.id.my_ScrollView);
 
 
         // Write a message to the database
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference("Messages");
+        final DatabaseReference myRef = database.getReference(chatRoomName);
 
 
         mDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                currLetter.add("short");
-//                letter = translation.Translate(currLetter);
-//                allLetters[letterTracker] = letter;
-//                morseCodeArr[morseTracker] = ".";
-//                morseTracker++;
-//                mUserMessage.setText(Arrays.toString(morseCodeArr));
-////                mUserMessage.setText(Arrays.toString(allLetters));
-
                 morseArr.add("short");
-
+                updateUserMessage();
             }
         });
 
         mDash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                currLetter.add("long");
-//                letter = translation.Translate(currLetter);
-//                allLetters[letterTracker] = letter;
-//                morseCodeArr[morseTracker] = "-";
-//                morseTracker++;
-//                mUserMessage.setText(Arrays.toString(morseCodeArr));
-////                mUserMessage.setText(Arrays.toString(allLetters));
-
                 morseArr.add("long");
+                updateUserMessage();
             }
         });
 
         mSpacebar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 morseArr.add(" ");
+                updateUserMessage();
             }
         });
 
         mBackSpace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-////                allLetters[letterTracker] = "";
-////                letterTracker--;
-//                morseTracker--;
-//                morseCodeArr[morseTracker] = "";
-//                if (currLetter.size() > 0) {
-//                    currLetter.remove(currLetter.size()-1);
-//                } else {
-//                    currLetter.clear();
-//                    allLetters[letterTracker-1] = "";
-//                    for (int i = 0; i < morseTracker; i++) {
-//
-//                        if (morseCodeArr[i].equals(".")) {
-//                            currLetter.add("short");
-//
-//                        } else if( morseCodeArr[i].equals("-")) {
-//                            currLetter.add("long");
-//                        }
-//                    }
-//                }
-//
-//                letter = translation.Translate(currLetter);
-//                allLetters[letterTracker] = letter;
-//                mUserMessage.setText(Arrays.toString(morseCodeArr));
-
                 if (morseArr.size() > 0) {
                     morseArr.remove(morseArr.size()-1);
+                    updateUserMessage();
                 }
-
             }
         });
 
@@ -186,63 +171,51 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-
                 finalMessage = translation.Translate(morseArr);
                 morseArr.clear();
+                userMessageTV.setText("Enter message");
 
                 if (finalMessage == null || finalMessage == "") {
-                    Toast.makeText(MainActivity.this, "No Message Created", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "No Message Created", Toast.LENGTH_SHORT).show();
                 } else {
 
-                    Map<String, Object> map = new HashMap<String, Object>();
+                    Map<String, Object> temp_Map = new HashMap<String, Object>();
                     temp_key = myRef.push().getKey();
-                    myRef.updateChildren(map);
+                    myRef.updateChildren(temp_Map);
 
-                    DatabaseReference message_root = myRef.child(temp_key);
-                    Map<String, Object> map2 = new HashMap<String, Object>();
+                    DatabaseReference message_Root = myRef.child(temp_key);
+                    Map<String, Object> messageMap = new HashMap<String, Object>();
 
-                    DateFormat dateFormat = new SimpleDateFormat("EE hh:mm a");
-                    Date date = new Date();
-                    String currDate = dateFormat.format(date);
+
+                    String currDate = getDate();
+
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                     String currUser;
 
-//                    String englishMessage = "";
-//                    String temp;
 
-//                    for (int i = 0; i < allLetters.length; i++) {
-//                        if (allLetters[i] != null) {
-//                            temp = englishMessage;
-//                            englishMessage = temp + allLetters[i];
-//                        } else {
-//                            break;
-//                        }
-//                    }
 
-                    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-                    String sosOn_or_Off = sharedPref.getString("SOS Functionality", "");
+                    for (int j =1; j < 6; j++ ) {
+                        if (finalMessage.equals(Integer.toString(j))) {
+                            finalMessage = getPresetMessage(finalMessage);
+                        }
+                    }
 
-                    if (finalMessage.equals("1") || finalMessage.equals("2") ||
-                            finalMessage.equals("3") || finalMessage.equals("4") || finalMessage.equals("5")) {
-                        finalMessage = getPresetMessage(finalMessage);
-                    } else if (finalMessage.equals("S O S") && sosOn_or_Off.equals("ON")) {
+                    sosOn_or_Off = sharedPref.getString("SOS Functionality", "");
+
+
+                    if (finalMessage.equals("S O S") && sosOn_or_Off.equals("ON")) {
+
                         finalMessage = sosMessage();
                     }
 
                     if (user != null) {
-                        currUser = user.getEmail();
-                        map2.put("Username", currUser);
-                        map2.put("Message", finalMessage);
-                        map2.put("DateSent", currDate);
+                        currUser = removeEmail(user);
+
+                        messageMap.put("Username", currUser);
+                        messageMap.put("Message", finalMessage);
+                        messageMap.put("DateSent", currDate);
 //                    Adds message to database
-                        message_root.updateChildren(map2);
-//                        letterTracker = 0;
-//                        morseTracker = 0;
-//                        currLetter.clear();
-//                        letter = "";
-//                        clearLetterArr();
-//                        clearMorseArr();
-//                        mUserMessage.setText("");
+                        message_Root.updateChildren(messageMap);
                     }
                 }
             }
@@ -278,13 +251,61 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void updateUserMessage() {
+
+        String userMessage = "";
+
+        if (morseArr.size() == 0) {
+            userMessageTV.setText("Enter Message");
+        } else {
+
+            for (String str : morseArr)
+            {
+
+                if (str.equals("short")) {
+
+                    userMessage += ".";
+                } else if (str.equals("long")) {
+
+                    userMessage += "-";
+                } else
+                userMessage += str;
+            }
+
+            userMessageTV.setText(userMessage);
+
+        }
+
+    }
+
+    private String removeEmail(FirebaseUser user) {
+
+        String temp = user.getEmail().toString();
+        String userName = "";
+        int i =0;
+
+        while(temp.charAt(i) != '@')
+        {
+            userName = userName + Character.toString(temp.charAt(i));
+            i++;
+        }
+        return userName;
+    }
+
+    private String getDate() {
+        DateFormat dateFormat = new SimpleDateFormat("EE h:mm a");
+        Date date = new Date();
+        String currDate = dateFormat.format(date);
+
+        return currDate;
+
+    }
+
     private String sosMessage() {
 //        GET CURRENT LOCATION
 
         Location();
-        String sosTempMessage = "Help Im in trouble and need assistance, heres my location" + " " + latLang;
-
-        
+        String sosTempMessage = "Help I am in trouble and need assistance, here is my location "  + latLang;
 
         return sosTempMessage;
     }
@@ -293,59 +314,36 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String message = sharedPref.getString(englishMessage, "");
 
-//        Toast.makeText(MainActivity.this,message,Toast.LENGTH_SHORT).show();
-
 
         return message;
     }
 
-    private void clearLetterArr() {
-        for (int i = 0; i < allLetters.length; i++) {
-            if (allLetters[i] != null) {
-                allLetters[i] = "";
-            } else {
-                break;
-            }
-        }
-    }
-
-    private void clearMorseArr() {
-        for (int i = 0; i < morseCodeArr.length; i++) {
-            if (morseCodeArr[i] != null) {
-                morseCodeArr[i] = "";
-            } else {
-                break;
-            }
-        }
-    }
-
     private String message, date, user;
 
-    //  Adds messages to scroll view
+
+    //  ADDS MESSAGE TO THE LIST VIEW
     private void add_Message(DataSnapshot dataSnapshot) {
         Iterator i = dataSnapshot.getChildren().iterator();
-        while (i.hasNext()) {
-            user = (String) ((DataSnapshot) i.next()).getValue();
-            message = (String) ((DataSnapshot) i.next()).getValue();
-            date = (String) ((DataSnapshot) i.next()).getValue();
 
-            mMessage.append(user + "\n " + date + "\n" + message + "\n");
-            mMessage.append("\n");
+        while (i.hasNext()) {
+            date = (String) ((DataSnapshot) i.next()).getValue();
+            message = (String) ((DataSnapshot) i.next()).getValue();
+            user = (String) ((DataSnapshot) i.next()).getValue();
+
+            String chatMessage = date + "\n" + user + "\n" + message;
+
+
+
+            //add message to list
+            ChatBubble ChatBubble = new ChatBubble(chatMessage);
+            ChatBubbles.add(ChatBubble);
+            adapter.notifyDataSetChanged();
         }
-        scrollViewDown();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        //Checks if user is signed in
-        FirebaseUser currUser = mAuth.getCurrentUser();
-        //Takes you to sign in activity from the function below
-        if (currUser == null) {
-            sendToLogin();
-        }
-        scrollViewDown();
-
         checkAndRequestPermissions();
         Location();
     }
@@ -353,9 +351,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        lm.removeUpdates(locationListener);
-        lm = null;
 
+        // Stop gathering location data when not on the main activity page
+        if (lm != null ) {
+            lm.removeUpdates(locationListener);
+            lm = null;
+        }
     }
 
     private boolean checkAndRequestPermissions() {
@@ -402,12 +403,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     LocationListener locationListener = new LocationListener() {
         @Override
         public void onLocationChanged(android.location.Location location) {
             lat = location.getLatitude();
             lang = location.getLongitude();
-            latLang = "New Latitude: "+lat + "New Longitude: "+lang;
+            latLang = "Latitude: "+lat + " Longitude: "+lang;
 //            Toast.makeText(MainActivity.this,latLang,Toast.LENGTH_LONG).show();
         }
 
@@ -429,20 +431,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void scrollViewDown() {
-        scrollView.post(new Runnable() {
-            @Override
-            public void run() {
-                scrollView.fullScroll(ScrollView.FOCUS_DOWN);
-            }
-        });
-    }
 
-    private void sendToLogin() {
-        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-        startActivity(intent);
-        finish();
-    }
 
 //    Adds toolbar items to activity
     @Override

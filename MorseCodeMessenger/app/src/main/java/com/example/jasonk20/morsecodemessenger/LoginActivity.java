@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button mNewAccount_Btn;
     private FirebaseAuth mAuth;
     private TextView needAccount_TV;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
         mPassword_ET = (EditText) findViewById(R.id.password_ET);
         mLogin_Btn = (Button) findViewById(R.id.login_Btn);
         needAccount_TV = (TextView) findViewById(R.id.needAccount_TV);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -48,8 +51,11 @@ public class LoginActivity extends AppCompatActivity {
                 if (email.length() == 0 || password.length() == 0) {
                     Toast.makeText(LoginActivity.this, "Nothing Entered", Toast.LENGTH_SHORT).show();
                 } else {
+
                     signin_existingUser(email, password);
+                    progressBar.setVisibility(View.VISIBLE);
                 }
+
             }
         });
 
@@ -69,9 +75,12 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        progressBar.setVisibility(View.INVISIBLE);
+
                         if (task.isSuccessful()) {
                             // Sign in success
-                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            Intent intent = new Intent(LoginActivity.this, ChatRooms.class);
                             startActivity(intent);
                             finish();
                         } else {

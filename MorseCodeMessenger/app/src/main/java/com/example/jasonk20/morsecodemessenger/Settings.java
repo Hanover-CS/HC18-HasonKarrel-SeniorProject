@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -20,6 +21,12 @@ public class Settings extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Button mPreset_Btn;
     private Switch mCurrLocation_Switch;
+    private Toolbar mToolbar;
+
+
+
+
+    private Button tempButton;
 
 
     @Override
@@ -32,6 +39,21 @@ public class Settings extends AppCompatActivity {
         mPreset_Btn = (Button) findViewById(R.id.preset_Btn);
         mCurrLocation_Switch = (Switch) findViewById(R.id.currLocation_Switch);
 
+
+
+
+
+        mToolbar = (Toolbar) findViewById(R.id.settings_Toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Settings");
+        mToolbar.setNavigationIcon(R.drawable.arrow_back_white);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        
         mLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,6 +88,8 @@ public class Settings extends AppCompatActivity {
                 }
             }
         });
+
+
     }
 
     @Override
@@ -79,6 +103,9 @@ public class Settings extends AppCompatActivity {
             mCurrLocation_Switch.setChecked(false);
         }
     }
+
+
+
 
 
 }

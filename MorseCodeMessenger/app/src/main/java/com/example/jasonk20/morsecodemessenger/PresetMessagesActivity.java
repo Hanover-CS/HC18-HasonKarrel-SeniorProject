@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -19,6 +20,7 @@ public class PresetMessagesActivity extends AppCompatActivity {
     private String spinnerItem;
     private EditText mPresetMessage;
     private String userInputMessage;
+    private Toolbar mToolbar;
 
 
     @Override
@@ -28,12 +30,22 @@ public class PresetMessagesActivity extends AppCompatActivity {
         mSpinner = (Spinner)findViewById(R.id.presetSpinner);
         mPreset_Btn = (Button)findViewById(R.id.presetSubmit_Btn);
         mPresetMessage = (EditText) findViewById(R.id.presetMessage);
+        mToolbar = (Toolbar) findViewById(R.id.presetMessage_Toolbar);
+
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle("Preset Messages");
+        mToolbar.setNavigationIcon(R.drawable.arrow_back_white);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         final Integer[] spinnerItems = new Integer[]{1,2,3,4,5};
         ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item,spinnerItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(adapter);
-
 
         mPreset_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,13 +64,8 @@ public class PresetMessagesActivity extends AppCompatActivity {
                     Toast.makeText(PresetMessagesActivity.this, "Nothing Entered",Toast.LENGTH_SHORT).show();
 
                 }
-
-
             }
         });
-
-
-
 
 
     }

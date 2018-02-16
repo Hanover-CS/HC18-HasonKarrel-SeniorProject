@@ -5,29 +5,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#5b5b5b"
     tools:context="com.example.jasonk20.morsecodemessenger.PresetMessagesActivity">
+
+<android.support.v7.widget.Toolbar
+    android:id="@+id/presetMessage_Toolbar"
+    android:layout_height="?attr/actionBarSize"
+    android:layout_width="match_parent"
+    android:background="#5b5b5b"
+    android:elevation="4dp"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    app:popupTheme="@style/Theme.AppCompat.Light">
+
+</android.support.v7.widget.Toolbar>
 
 
     <Spinner
+        android:id="@+id/presetSpinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/presetSpinner"
+        android:layout_marginTop="30dp"
         android:paddingBottom="20dp"
-        android:paddingTop="20dp"/>
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="20dp"
+        android:popupBackground="@android:color/holo_blue_light" />
 
 
     <EditText
         android:id="@+id/presetMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:ems="10"
         android:hint="Preset Message..."
         android:inputType="textPersonName"
-        android:paddingBottom="20dp"/>
+        android:paddingBottom="20dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:textColor="@android:color/black"
+        android:textColorHint="@android:color/black" />
 
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:paddingRight="10dp"
+        android:paddingLeft="10dp"
         android:text="@string/set"
         android:id="@+id/presetSubmit_Btn"/>
 </LinearLayout>
