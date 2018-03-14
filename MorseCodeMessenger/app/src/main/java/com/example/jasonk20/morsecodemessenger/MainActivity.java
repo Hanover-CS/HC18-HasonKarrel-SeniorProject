@@ -1,18 +1,12 @@
 package com.example.jasonk20.morsecodemessenger;
 
-import android.*;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
-import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.location.LocationProvider;
-import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -24,16 +18,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderApi;
-import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -42,11 +33,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -71,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     private double lang;
     private String latLang;
     private LocationManager lm;
-
     private String finalMessage = "";
     private List<ChatBubble> ChatBubbles;
     private ArrayAdapter<ChatBubble> adapter;
@@ -79,9 +67,12 @@ public class MainActivity extends AppCompatActivity {
     private TextView userMessageTV;
     private String sosOn_or_Off;
     private SharedPreferences sharedPref;
-
     private ArrayList<String> morseArr = new ArrayList<>();
     private String chatRoomName;
+    private EditText regular_ET;
+    private int keyboardInt;
+    private ImageButton regularTextSend;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,16 +88,13 @@ public class MainActivity extends AppCompatActivity {
 
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
-
         userMessageTV = (TextView) findViewById(R.id.userMessage_TV);
 
-
-
-
-
+//        Get chatroom name selected from previous activity
         Bundle extras = getIntent().getExtras();
         chatRoomName = extras.getString("ChatRoomName");
 
+//      Adds toolbar title and back button
         mToolbar = (Toolbar) findViewById(R.id.my_Toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(chatRoomName);
@@ -119,19 +107,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
         mSend_Btn = (Button) findViewById(R.id.send_Btn);
         mBackSpace = (Button) findViewById(R.id.backspace_Btn);
         mDot = (Button) findViewById(R.id.dot_Btn);
         mDash = (Button) findViewById(R.id.dash_Btn);
         mSpacebar = (Button) findViewById(R.id.spacebar_Btn);
+        regular_ET = (EditText) findViewById(R.id.regularText_ET);
+        regularTextSend = (ImageButton) findViewById(R.id.regularSendBT);
+
+        keyboardInt = 0;
 
 
-        // Write a message to the database
+        // Gets branch for the desired chat room
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference(chatRoomName);
 
 
+//        adds a short unit to the morse code arraylist
         mDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+//        adds a long unit to the morse code arraylist
         mDash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -160,8 +153,37 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if (morseArr.size() > 0) {
-                    morseArr.remove(morseArr.size()-1);
+                    morseArr.remove(morseArr.size() - 1);
                     updateUserMessage();
+                }
+            }
+        });
+
+        regularTextSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String regularMessage = regular_ET.getText().toString();
+
+                if (regularMessage.length() == 0) {
+                    Toast.makeText(MainActivity.this, "No Message Created", Toast.LENGTH_SHORT).show();
+                } else {
+
+                    Map<String, Object> temp_Map = new HashMap<String, Object>();
+                    temp_key = myRef.push().getKey();
+                    myRef.updateChildren(temp_Map);
+                    DatabaseReference message_Root = myRef.child(temp_key);
+//                    Map<String, Object> messageMap = new HashMap<String, Object>();
+                    String currDate = getDate();
+                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                    String currUser;
+
+
+                    if (user != null) {
+                        currUser = removeEmail(user);
+                        sendtoDB(message_Root, currUser, regularMessage, currDate);
+                    }
+                    regular_ET.setText("");
                 }
             }
         });
@@ -171,6 +193,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+//                sends morse code array to the the translation algorithm
                 finalMessage = translation.Translate(morseArr);
                 morseArr.clear();
                 userMessageTV.setText("Enter message");
@@ -179,12 +202,13 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "No Message Created", Toast.LENGTH_SHORT).show();
                 } else {
 
+//                    push an empty node to the branch to get the random generated key for when the actual message is pushed to the database
                     Map<String, Object> temp_Map = new HashMap<String, Object>();
                     temp_key = myRef.push().getKey();
                     myRef.updateChildren(temp_Map);
 
                     DatabaseReference message_Root = myRef.child(temp_key);
-                    Map<String, Object> messageMap = new HashMap<String, Object>();
+//                    Map<String, Object> messageMap = new HashMap<String, Object>();
 
 
                     String currDate = getDate();
@@ -194,7 +218,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-                    for (int j =1; j < 6; j++ ) {
+//                    check if the final message is a number and then turn number into the preset message created by user
+                    for (int j = 1; j < 6; j++) {
                         if (finalMessage.equals(Integer.toString(j))) {
                             finalMessage = getPresetMessage(finalMessage);
                         }
@@ -203,24 +228,26 @@ public class MainActivity extends AppCompatActivity {
                     sosOn_or_Off = sharedPref.getString("SOS Functionality", "");
 
 
+//                    if user sends sos message and the functionality is turned on then create the sos message with the user's location
                     if (finalMessage.equals("S O S") && sosOn_or_Off.equals("ON")) {
-
                         finalMessage = sosMessage();
                     }
 
+//                   check if user somehow bypassed login authentication
                     if (user != null) {
                         currUser = removeEmail(user);
+////                       adds all the information into the message
+//                        messageMap.put("Username", currUser);
+//                        messageMap.put("Message", finalMessage);
+//                        messageMap.put("DateSent", currDate);
+////                    Adds message to database
+//                        message_Root.updateChildren(messageMap);
 
-                        messageMap.put("Username", currUser);
-                        messageMap.put("Message", finalMessage);
-                        messageMap.put("DateSent", currDate);
-//                    Adds message to database
-                        message_Root.updateChildren(messageMap);
+                        sendtoDB(message_Root, currUser, finalMessage, currDate);
                     }
                 }
             }
         });
-
 
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -251,6 +278,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void sendtoDB(DatabaseReference databaseReference, String user, String message, String date  ) {
+
+//      Adds all the information into the message
+        Map<String, Object> messageMap = new HashMap<String, Object>();
+        messageMap.put("Username", user);
+        messageMap.put("Message", message);
+        messageMap.put("DateSent", date);
+//      Adds message to database
+        databaseReference.updateChildren(messageMap);
+    }
+
+
     private void updateUserMessage() {
 
         String userMessage = "";
@@ -259,8 +298,7 @@ public class MainActivity extends AppCompatActivity {
             userMessageTV.setText("Enter Message");
         } else {
 
-            for (String str : morseArr)
-            {
+            for (String str : morseArr) {
 
                 if (str.equals("short")) {
 
@@ -269,23 +307,19 @@ public class MainActivity extends AppCompatActivity {
 
                     userMessage += "-";
                 } else
-                userMessage += str;
+                    userMessage += str;
             }
-
             userMessageTV.setText(userMessage);
-
         }
-
     }
 
     private String removeEmail(FirebaseUser user) {
 
         String temp = user.getEmail().toString();
         String userName = "";
-        int i =0;
+        int i = 0;
 
-        while(temp.charAt(i) != '@')
-        {
+        while (temp.charAt(i) != '@') {
             userName = userName + Character.toString(temp.charAt(i));
             i++;
         }
@@ -305,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
 //        GET CURRENT LOCATION
 
         Location();
-        String sosTempMessage = "Help I am in trouble and need assistance, here is my location "  + latLang;
+        String sosTempMessage = "Help I am in trouble and need assistance, here is my location " + latLang;
 
         return sosTempMessage;
     }
@@ -331,8 +365,6 @@ public class MainActivity extends AppCompatActivity {
             user = (String) ((DataSnapshot) i.next()).getValue();
 
             String chatMessage = date + "\n" + user + "\n" + message;
-
-
 
             //add message to list
             ChatBubble ChatBubble = new ChatBubble(chatMessage);
@@ -430,14 +462,11 @@ public class MainActivity extends AppCompatActivity {
     };
 
 
-
-
-
 //    Adds toolbar items to activity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.toolbar, menu);
+        getMenuInflater().inflate(R.menu.toolbarmain, menu);
         return true;
     }
 
@@ -450,6 +479,29 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, Settings.class);
                 startActivity(intent);
                 return true;
+
+            case R.id.action_regularText:
+                // User chose the "Keyboard" item
+                keyboardInt++;
+                if (keyboardInt % 2 != 0) {
+                    regular_ET.setVisibility(View.VISIBLE);
+                    regularTextSend.setVisibility(View.VISIBLE);
+                    userMessageTV.setVisibility(View.INVISIBLE);
+                    mBackSpace.setVisibility(View.INVISIBLE);
+                    mDot.setVisibility(View.INVISIBLE);
+                    mDash.setVisibility(View.INVISIBLE);
+                    mSpacebar.setVisibility(View.INVISIBLE);
+                    mSend_Btn.setVisibility(View.INVISIBLE);
+                } else {
+                    regular_ET.setVisibility(View.INVISIBLE);
+                    regularTextSend.setVisibility(View.INVISIBLE);
+                    userMessageTV.setVisibility(View.VISIBLE);
+                    mBackSpace.setVisibility(View.VISIBLE);
+                    mDot.setVisibility(View.VISIBLE);
+                    mDash.setVisibility(View.VISIBLE);
+                    mSpacebar.setVisibility(View.VISIBLE);
+                    mSend_Btn.setVisibility(View.VISIBLE);
+                }
 
             default:
                 // If we got here, the user's action was not recognized.

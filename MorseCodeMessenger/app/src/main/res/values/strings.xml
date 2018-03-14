@@ -15,4 +15,6 @@
     <string name="set">Set</string>
     <string name="back">Back</string>
     <string name="title_activity_chat_rooms">ChatRooms</string>
+    <string name="regular_text">Regular Text</string>
+    <string name="switch_text_mode">Switch Text Mode</string>
 </resources>

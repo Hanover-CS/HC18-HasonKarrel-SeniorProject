@@ -1,7 +1,9 @@
 package com.example.jasonk20.morsecodemessenger;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -38,7 +40,6 @@ public class LoginActivity extends AppCompatActivity {
         needAccount_TV = (TextView) findViewById(R.id.needAccount_TV);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
-
         mAuth = FirebaseAuth.getInstance();
 
 
@@ -55,7 +56,6 @@ public class LoginActivity extends AppCompatActivity {
                     signin_existingUser(email, password);
                     progressBar.setVisibility(View.VISIBLE);
                 }
-
             }
         });
 
