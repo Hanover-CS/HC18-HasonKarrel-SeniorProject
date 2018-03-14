@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText regular_ET;
     private int keyboardInt;
     private ImageButton regularTextSend;
+    private DatabaseReference myRef;
 
 
     @Override
@@ -117,10 +118,13 @@ public class MainActivity extends AppCompatActivity {
 
         keyboardInt = 0;
 
+//      **************
 
         // Gets branch for the desired chat room
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference(chatRoomName);
+//        final DatabaseReference myRef = database.getReference(chatRoomName);
+        myRef = database.getReference(chatRoomName);
+//       **************
 
 
 //        adds a short unit to the morse code arraylist
@@ -168,21 +172,7 @@ public class MainActivity extends AppCompatActivity {
                 if (regularMessage.length() == 0) {
                     Toast.makeText(MainActivity.this, "No Message Created", Toast.LENGTH_SHORT).show();
                 } else {
-
-                    Map<String, Object> temp_Map = new HashMap<String, Object>();
-                    temp_key = myRef.push().getKey();
-                    myRef.updateChildren(temp_Map);
-                    DatabaseReference message_Root = myRef.child(temp_key);
-//                    Map<String, Object> messageMap = new HashMap<String, Object>();
-                    String currDate = getDate();
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    String currUser;
-
-
-                    if (user != null) {
-                        currUser = removeEmail(user);
-                        sendtoDB(message_Root, currUser, regularMessage, currDate);
-                    }
+                    sendtoDB(regularMessage);
                     regular_ET.setText("");
                 }
             }
@@ -192,60 +182,7 @@ public class MainActivity extends AppCompatActivity {
         mSend_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-//                sends morse code array to the the translation algorithm
-                finalMessage = translation.Translate(morseArr);
-                morseArr.clear();
-                userMessageTV.setText("Enter message");
-
-                if (finalMessage == null || finalMessage == "") {
-                    Toast.makeText(MainActivity.this, "No Message Created", Toast.LENGTH_SHORT).show();
-                } else {
-
-//                    push an empty node to the branch to get the random generated key for when the actual message is pushed to the database
-                    Map<String, Object> temp_Map = new HashMap<String, Object>();
-                    temp_key = myRef.push().getKey();
-                    myRef.updateChildren(temp_Map);
-
-                    DatabaseReference message_Root = myRef.child(temp_key);
-//                    Map<String, Object> messageMap = new HashMap<String, Object>();
-
-
-                    String currDate = getDate();
-
-                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    String currUser;
-
-
-
-//                    check if the final message is a number and then turn number into the preset message created by user
-                    for (int j = 1; j < 6; j++) {
-                        if (finalMessage.equals(Integer.toString(j))) {
-                            finalMessage = getPresetMessage(finalMessage);
-                        }
-                    }
-
-                    sosOn_or_Off = sharedPref.getString("SOS Functionality", "");
-
-
-//                    if user sends sos message and the functionality is turned on then create the sos message with the user's location
-                    if (finalMessage.equals("S O S") && sosOn_or_Off.equals("ON")) {
-                        finalMessage = sosMessage();
-                    }
-
-//                   check if user somehow bypassed login authentication
-                    if (user != null) {
-                        currUser = removeEmail(user);
-////                       adds all the information into the message
-//                        messageMap.put("Username", currUser);
-//                        messageMap.put("Message", finalMessage);
-//                        messageMap.put("DateSent", currDate);
-////                    Adds message to database
-//                        message_Root.updateChildren(messageMap);
-
-                        sendtoDB(message_Root, currUser, finalMessage, currDate);
-                    }
-                }
+                sendBtnOnClick();
             }
         });
 
@@ -275,18 +212,58 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void sendBtnOnClick() {
+
+        //                sends morse code array to the the translation algorithm
+        finalMessage = translation.Translate(morseArr);
+        morseArr.clear();
+        userMessageTV.setText("Enter Morse Code Message");
+
+        if (finalMessage == null || finalMessage == "") {
+            Toast.makeText(MainActivity.this, "No Message Created", Toast.LENGTH_SHORT).show();
+        } else {
+
+//                    check if the final message is a number and then turn number into the preset message created by user
+            for (int j = 1; j < 6; j++) {
+                if (finalMessage.equals(Integer.toString(j))) {
+                    finalMessage = getPresetMessage(finalMessage);
+                }
+            }
+
+            sosOn_or_Off = sharedPref.getString("SOS Functionality", "");
+
+
+//                    if user sends sos message and the functionality is turned on then create the sos message with the user's location
+            if (finalMessage.equals("S O S") && sosOn_or_Off.equals("ON")) {
+                finalMessage = sosMessage();
+            }
+                sendtoDB(finalMessage);
+        }
 
     }
 
-    private void sendtoDB(DatabaseReference databaseReference, String user, String message, String date  ) {
+    private void sendtoDB(String message) {
 
+        Map<String, Object> temp_Map = new HashMap<String, Object>();
+        temp_key = myRef.push().getKey();
+        myRef.updateChildren(temp_Map);
+        DatabaseReference message_Root = myRef.child(temp_key);
+        String currDate = getDate();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        String currUser;
+
+        if (user != null) {
+            currUser = removeEmail(user);
 //      Adds all the information into the message
-        Map<String, Object> messageMap = new HashMap<String, Object>();
-        messageMap.put("Username", user);
-        messageMap.put("Message", message);
-        messageMap.put("DateSent", date);
+            Map<String, Object> messageMap = new HashMap<String, Object>();
+            messageMap.put("Username", currUser);
+            messageMap.put("Message", message);
+            messageMap.put("DateSent", currDate);
 //      Adds message to database
-        databaseReference.updateChildren(messageMap);
+            message_Root.updateChildren(messageMap);
+        }
     }
 
 
@@ -337,7 +314,6 @@ public class MainActivity extends AppCompatActivity {
 
     private String sosMessage() {
 //        GET CURRENT LOCATION
-
         Location();
         String sosTempMessage = "Help I am in trouble and need assistance, here is my location " + latLang;
 
