@@ -94,12 +94,12 @@
 
         <ImageButton
             android:id="@+id/regularSendBT"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_marginBottom="10dp"
-            android:layout_marginRight="5dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="10dp"
             android:background="@drawable/regularsendicon"
             android:visibility="invisible" />
 

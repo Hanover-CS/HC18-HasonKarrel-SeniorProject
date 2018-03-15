@@ -2,17 +2,17 @@ package com.example.jasonk20.morsecodemessenger;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.location.LocationListener;
+import android.location.Location;
+import android.app.AlertDialog;
 import android.location.LocationManager;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
+import android.provider.Settings;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -46,20 +47,10 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
 
 
-    private FirebaseAuth.AuthStateListener mAuthListener;
-    private Button mSend_Btn;
+    private Button mSend_Btn, mBackSpace, mDot, mDash, mSpacebar;
     private String temp_key;
     private Toolbar mToolbar;
-    private Button mBackSpace;
-    private Button mDot;
-    private Button mDash;
-    private Button mSpacebar;
     private Translation translation = new Translation();
-    public static final int REQUEST_ID_MULTIPLE_PERMISSIONS = 1;
-    private double lat;
-    private double lang;
-    private String latLang;
-    private LocationManager lm;
     private String finalMessage = "";
     private List<ChatBubble> ChatBubbles;
     private ArrayAdapter<ChatBubble> adapter;
@@ -73,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
     private int keyboardInt;
     private ImageButton regularTextSend;
     private DatabaseReference myRef;
+    private static final int REQUEST_LOCATION = 1;
+    private LocationManager locationManager;
+    private String latitude,longitude;
 
 
     @Override
@@ -90,6 +84,9 @@ public class MainActivity extends AppCompatActivity {
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         userMessageTV = (TextView) findViewById(R.id.userMessage_TV);
+
+//        Check location permissions
+        ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
 
 //        Get chatroom name selected from previous activity
         Bundle extras = getIntent().getExtras();
@@ -118,14 +115,9 @@ public class MainActivity extends AppCompatActivity {
 
         keyboardInt = 0;
 
-//      **************
-
         // Gets branch for the desired chat room
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-//        final DatabaseReference myRef = database.getReference(chatRoomName);
         myRef = database.getReference(chatRoomName);
-//       **************
-
 
 //        adds a short unit to the morse code arraylist
         mDot.setOnClickListener(new View.OnClickListener() {
@@ -178,7 +170,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         mSend_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -216,7 +207,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendBtnOnClick() {
 
-        //                sends morse code array to the the translation algorithm
+//       Sends morse code array to the the translation algorithm
         finalMessage = translation.Translate(morseArr);
         morseArr.clear();
         userMessageTV.setText("Enter Morse Code Message");
@@ -225,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "No Message Created", Toast.LENGTH_SHORT).show();
         } else {
 
-//                    check if the final message is a number and then turn number into the preset message created by user
+//       Check if the final message is a number and then turn number into the preset message created by user
             for (int j = 1; j < 6; j++) {
                 if (finalMessage.equals(Integer.toString(j))) {
                     finalMessage = getPresetMessage(finalMessage);
@@ -235,13 +226,18 @@ public class MainActivity extends AppCompatActivity {
             sosOn_or_Off = sharedPref.getString("SOS Functionality", "");
 
 
-//                    if user sends sos message and the functionality is turned on then create the sos message with the user's location
+//       If user sends SOS message and the functionality is turned on then create the SOS message with the user's location
             if (finalMessage.equals("S O S") && sosOn_or_Off.equals("ON")) {
-                finalMessage = sosMessage();
-            }
-                sendtoDB(finalMessage);
-        }
 
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    buildAlertMessageNoGps();
+                } else if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                    getLocation();
+                }
+            }
+            sendtoDB(finalMessage);
+        }
     }
 
     private void sendtoDB(String message) {
@@ -261,18 +257,17 @@ public class MainActivity extends AppCompatActivity {
             messageMap.put("Username", currUser);
             messageMap.put("Message", message);
             messageMap.put("DateSent", currDate);
-//      Adds message to database
+//      Pushes message to the database
             message_Root.updateChildren(messageMap);
         }
     }
-
 
     private void updateUserMessage() {
 
         String userMessage = "";
 
         if (morseArr.size() == 0) {
-            userMessageTV.setText("Enter Message");
+            userMessageTV.setText("Enter Morse Code Message Message");
         } else {
 
             for (String str : morseArr) {
@@ -309,27 +304,16 @@ public class MainActivity extends AppCompatActivity {
         String currDate = dateFormat.format(date);
 
         return currDate;
-
-    }
-
-    private String sosMessage() {
-//        GET CURRENT LOCATION
-        Location();
-        String sosTempMessage = "Help I am in trouble and need assistance, here is my location " + latLang;
-
-        return sosTempMessage;
     }
 
     private String getPresetMessage(String englishMessage) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String message = sharedPref.getString(englishMessage, "");
 
-
         return message;
     }
 
     private String message, date, user;
-
 
     //  ADDS MESSAGE TO THE LIST VIEW
     private void add_Message(DataSnapshot dataSnapshot) {
@@ -349,94 +333,72 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        checkAndRequestPermissions();
-        Location();
-    }
+    private void getLocation() {
+        if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+                (MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        // Stop gathering location data when not on the main activity page
-        if (lm != null ) {
-            lm.removeUpdates(locationListener);
-            lm = null;
-        }
-    }
-
-    private boolean checkAndRequestPermissions() {
-        int internet = ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET);
-        int storage = ContextCompat.checkSelfPermission(this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        int storage1 = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
-        int loc = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION);
-        int loc2 = ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION);
-        List<String> listPermissionsNeeded = new ArrayList<>();
-
-        if (internet != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(android.Manifest.permission.CAMERA);
-        }
-        if (storage != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        if (storage1 != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-        if (loc2 != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
-        }
-        if (loc != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(android.Manifest.permission.ACCESS_COARSE_LOCATION);
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray
-                    (new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
-            return false;
-        }
-        return true;
-    }
-
-    private void Location() {
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-
-            lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER,2000,10,locationListener);
-
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
 
         } else {
-            checkAndRequestPermissions();
+            Location locationNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+            Location locationPassive = locationManager.getLastKnownLocation(LocationManager. PASSIVE_PROVIDER);
+
+            if (locationNetwork != null) {
+                double latti = locationNetwork.getLatitude();
+                double longi = locationNetwork.getLongitude();
+                latitude = String.valueOf(latti);
+                longitude = String.valueOf(longi);
+                locMessageBuilder(latitude, longitude);
+
+            } else  if (locationGPS != null) {
+                double latti = locationGPS.getLatitude();
+                double longi = locationGPS.getLongitude();
+                latitude = String.valueOf(latti);
+                longitude = String.valueOf(longi);
+                locMessageBuilder(latitude, longitude);
+
+            } else  if (locationPassive != null) {
+                double latti = locationPassive.getLatitude();
+                double longi = locationPassive.getLongitude();
+                latitude = String.valueOf(latti);
+                longitude = String.valueOf(longi);
+                locMessageBuilder(latitude, longitude);
+
+            }else{
+
+                Toast.makeText(this,"Unble to Trace your location",Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
+    void locMessageBuilder(String lat, String lon) {
+        finalMessage = "Help I'm in trouble and need assistance, here's my location:"+ "\n" + "Latitude = " + lat
+                + "\n" + "Longitude = " + lon;
+    }
 
-    LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(android.location.Location location) {
-            lat = location.getLatitude();
-            lang = location.getLongitude();
-            latLang = "Latitude: "+lat + " Longitude: "+lang;
-//            Toast.makeText(MainActivity.this,latLang,Toast.LENGTH_LONG).show();
-        }
+//      builds an alert when app doesn't have permission to access location
+    protected void buildAlertMessageNoGps() {
 
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-
-        }
-    };
-
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Please Turn ON your GPS Connection")
+                .setCancelable(false)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    public void onClick(final DialogInterface dialog, final int id) {
+                        dialog.cancel();
+                    }
+                });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
 
 //    Adds toolbar items to activity
     @Override
@@ -452,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_settings:
                 // User chose the "Settings" item, show the app settings UI...
-                Intent intent = new Intent(MainActivity.this, Settings.class);
+                Intent intent = new Intent(MainActivity.this, com.example.jasonk20.morsecodemessenger.Settings.class);
                 startActivity(intent);
                 return true;
 
@@ -485,5 +447,4 @@ public class MainActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }
