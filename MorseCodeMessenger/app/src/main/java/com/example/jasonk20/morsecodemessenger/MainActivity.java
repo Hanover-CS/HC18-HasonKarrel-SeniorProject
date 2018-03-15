@@ -267,7 +267,7 @@ public class MainActivity extends AppCompatActivity {
         String userMessage = "";
 
         if (morseArr.size() == 0) {
-            userMessageTV.setText("Enter Morse Code Message Message");
+            userMessageTV.setText("Enter Morse Code Message");
         } else {
 
             for (String str : morseArr) {

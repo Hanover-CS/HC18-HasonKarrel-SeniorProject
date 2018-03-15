@@ -59,11 +59,7 @@ public class ChatRooms extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         mAuth = FirebaseAuth.getInstance();
-
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-
-
         chatRoomsList = (ListView) findViewById(R.id.chatRoomsLV);
         arrayAdapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,list_of_rooms);
         chatRoomsList.setAdapter(arrayAdapter);
@@ -103,8 +99,6 @@ public class ChatRooms extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
-
-//                Toast.makeText(ChatRooms.this, ((TextView)view).getText().toString(), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(ChatRooms.this, MainActivity.class);
                 intent.putExtra("ChatRoomName",((TextView)view).getText().toString() );
                 startActivity(intent);
@@ -125,11 +119,9 @@ public class ChatRooms extends AppCompatActivity {
                 }
 
                 progressBar.setVisibility(View.GONE);
-
                 list_of_rooms.clear();
                 list_of_rooms.addAll(set);
                 arrayAdapter.notifyDataSetChanged();
-//                Snackbar.make(getWindow().getDecorView().getRootView(), "Chat Room Added", Snackbar.LENGTH_LONG).show();
             }
 
             @Override
