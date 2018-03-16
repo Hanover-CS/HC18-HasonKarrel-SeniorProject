@@ -16,12 +16,10 @@
     <ProgressBar
         android:id="@+id/spashLoadingBar"
         style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/splashscreen"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="100dp"
-        android:layout_marginRight="100dp"
         android:layout_marginTop="30dp"
         android:indeterminate="true"
         android:indeterminateTintMode="src_atop"

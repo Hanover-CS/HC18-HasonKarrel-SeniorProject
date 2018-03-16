@@ -50,11 +50,11 @@ public class ChatRooms extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ProgressBar progressBar;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_rooms);
+        Global.splashed = true;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -184,5 +184,4 @@ public class ChatRooms extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
 }
