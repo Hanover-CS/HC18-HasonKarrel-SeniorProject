@@ -18,7 +18,8 @@
         <activity android:name=".RegisterActivity" />
         <activity android:name=".Settings" />
         <activity android:name=".PresetMessagesActivity" />
-        <activity android:name=".Splash">
+        <activity android:name=".Splash"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER"/>

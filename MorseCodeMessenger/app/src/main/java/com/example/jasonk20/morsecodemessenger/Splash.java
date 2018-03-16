@@ -35,6 +35,8 @@ public class Splash extends Activity {
                 public void run() {
                     Intent intent = new Intent(Splash.this, ChatRooms.class);
                     Splash.this.startActivity(intent);
+//                  Fades the splash screen out into the ChatRoom activity
+                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                     Splash.this.finish();
                 }
             }, SPLASH_DISPLAY_LENGTH);
