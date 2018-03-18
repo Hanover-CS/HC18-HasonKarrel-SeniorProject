@@ -46,7 +46,7 @@ public class Settings extends AppCompatActivity {
         mToolbar = (Toolbar) findViewById(R.id.settings_Toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Settings");
-        mToolbar.setNavigationIcon(R.drawable.arrow_back_white);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

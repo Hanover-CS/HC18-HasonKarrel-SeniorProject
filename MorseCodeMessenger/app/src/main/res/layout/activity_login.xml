@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_height="match_parent"
+    android:theme="@style/AppTheme"
     android:background="#5b5b5b"
     tools:context="com.example.jasonk20.morsecodemessenger.LoginActivity">
 
@@ -67,6 +68,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="15dp"
         android:clickable="true"
+        android:textSize="15sp"
         android:text="@string/need_an_account"
         android:textColor="@android:color/black"
         android:textStyle="bold" />

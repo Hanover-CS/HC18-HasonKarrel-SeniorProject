@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#5b5b5b"
+    android:theme="@style/AppTheme"
     android:orientation="vertical"
     tools:context="com.example.jasonk20.morsecodemessenger.RegisterActivity">
 
@@ -68,7 +69,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
         android:contentDescription="@string/back"
-        android:background="@drawable/white_back_arrow"
+        android:background="@drawable/ic_arrow_back"
         android:textAlignment="center"
         android:clickable="true"
         android:textColor="@android:color/holo_red_dark" />

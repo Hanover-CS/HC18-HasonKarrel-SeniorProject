@@ -34,7 +34,7 @@ public class PresetMessagesActivity extends AppCompatActivity {
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Preset Messages");
-        mToolbar.setNavigationIcon(R.drawable.arrow_back_white);
+        mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@style/AppTheme"
     android:orientation="vertical"
     tools:context="com.example.jasonk20.morsecodemessenger.MainActivity">
 
@@ -83,14 +84,15 @@
 
         <TextView
             android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/userMessage_TV"
             android:text="Enter Morse Code Message"
             android:textColor="#fcfcfc"
-            android:textSize="25dp"
+            android:textSize="22sp"
             android:layout_above="@+id/linearLL"
-            android:paddingBottom="20dp"/>
+            android:paddingBottom="5dp"/>
 
         <ImageButton
             android:id="@+id/regularSendBT"
@@ -113,7 +115,7 @@
             android:hint="Enter Text Message..."
             android:paddingLeft="10dp"
             android:textColorHint="@android:color/white"
-            android:textSize="25dp"
+            android:textSize="20sp"
             android:visibility="invisible" />
     </RelativeLayout>
 
