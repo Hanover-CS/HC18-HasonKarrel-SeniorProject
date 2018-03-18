@@ -100,7 +100,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginBottom="15dp"
             android:layout_marginRight="10dp"
-            android:background="@drawable/regularsendicon"
+            android:background="@drawable/ic_menu_send"
             android:visibility="invisible" />
 
         <EditText

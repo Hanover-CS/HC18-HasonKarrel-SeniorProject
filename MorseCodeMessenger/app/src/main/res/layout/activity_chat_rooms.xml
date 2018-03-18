@@ -34,7 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/chatRoomsLV"
-            android:layout_marginBottom="110dp"/>
+            android:layout_marginBottom="60dp"/>
 
         <ProgressBar
             android:id="@+id/progressBarChatRoom"
@@ -48,13 +48,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="50dp"
+            android:paddingRight="10dp"
+            android:paddingLeft="10dp"
+            android:paddingBottom="20dp"
+            android:paddingTop="10dp"
+            android:background="#4f4f51"
+            android:hint="Add New Chat Room"
+            android:elevation="6dp"
+            android:textColorHint="@android:color/black"
+            android:visibility="invisible" />
+
+        <!--android:layout_marginBottom="50dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="10dp"
-            android:hint="Add New Chat Room"
-            android:textColorHint="@android:color/black"
-            android:visibility="visible" />
+            android:layout_marginTop="10dp"-->
 
     </RelativeLayout>
 
@@ -62,9 +69,10 @@
         android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="30dp"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        android:visibility="invisible"
         app:backgroundTint="@android:color/holo_purple"
         app:srcCompat="@drawable/add_black" />
 
