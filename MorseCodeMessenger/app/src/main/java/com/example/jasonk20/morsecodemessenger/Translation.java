@@ -263,7 +263,7 @@ public class Translation {
        return englishMessage;
     }
 
-    public String translation(ArrayList<String> arrayList) {
+    private String translation(ArrayList<String> arrayList) {
 
        String letter = "";
        
