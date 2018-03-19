@@ -24,7 +24,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mEmail_ET;
     private EditText mPassword_ET;
     private Button mLogin_Btn;
-    private Button mNewAccount_Btn;
     private FirebaseAuth mAuth;
     private TextView needAccount_TV;
     private ProgressBar progressBar;
@@ -42,7 +41,9 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-
+        /**
+         * Gathers email and password entered from the user for sign in
+         */
         mLogin_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,7 +69,12 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * This method is used to authenticate the user's credentials
+     * with the account they have already created in Google Firebase
+     * @param email1 This is th user's email
+     * @param password1  This is the user's password
+     */
 
     private void signin_existingUser(String email1, String password1) {
         mAuth.signInWithEmailAndPassword(email1, password1)

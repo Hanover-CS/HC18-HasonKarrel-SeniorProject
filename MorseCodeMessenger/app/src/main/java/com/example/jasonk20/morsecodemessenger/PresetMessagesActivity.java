@@ -43,10 +43,16 @@ public class PresetMessagesActivity extends AppCompatActivity {
         });
 
         final Integer[] spinnerItems = new Integer[]{1,2,3,4,5};
+//        Creates the spinners with the array spinnerItems as the clickable items
         ArrayAdapter<Integer> adapter = new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item,spinnerItems);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mSpinner.setAdapter(adapter);
 
+        /**
+         * Saves the message created by the user internally and
+         * corresponds to the number chosen from the spinner
+         * when the Set button is clicked
+         */
         mPreset_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,7 +72,5 @@ public class PresetMessagesActivity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 }

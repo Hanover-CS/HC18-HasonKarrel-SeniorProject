@@ -54,9 +54,11 @@ public class ChatRooms extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_rooms);
+//      This is set to true so splash screen isn't showed again
         Global.splashed = true;
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+//        Close keyboard
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         mAuth = FirebaseAuth.getInstance();
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -66,8 +68,9 @@ public class ChatRooms extends AppCompatActivity {
         mEditText = (EditText) findViewById(R.id.chatRoomsET);
         progressBar = (ProgressBar) findViewById(R.id.progressBarChatRoom);
 
-
-
+        /**
+         * Adds a new chatroom to the database when floating action button is clicked
+         */
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,6 +98,9 @@ public class ChatRooms extends AppCompatActivity {
             }
         });
 
+        /**
+         * Takes user to the MainActivity when a chatroom is clicked
+         */
         chatRoomsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -106,7 +112,9 @@ public class ChatRooms extends AppCompatActivity {
             }
         });
 
-
+        /**
+         * Populates the ListView with the chatrooms fetched from the database
+         */
         dbRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -134,6 +142,13 @@ public class ChatRooms extends AppCompatActivity {
 
     }
 
+    /**
+     * This method is used to check if the chatroom that is wanting to be
+     * added by the user already exists in the list of chatrooms
+     * @param list the list of chatrooms
+     * @param chatroomName  chatroom name entered by the user
+     * @return boolean This returns true is chatroom is already present
+     */
     public boolean checkifthere(ArrayList<String> list, String chatroomName ) {
 
         for (String s: list) {
@@ -155,7 +170,8 @@ public class ChatRooms extends AppCompatActivity {
             sendToLogin();
         }
     }
-
+//    Sends user to LoginActivity and calls finish method so they can't
+//    return back until they have logged in
     private void sendToLogin() {
         Intent intent = new Intent(ChatRooms.this, LoginActivity.class);
         startActivity(intent);

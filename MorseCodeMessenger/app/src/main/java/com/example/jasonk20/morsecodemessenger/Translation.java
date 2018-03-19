@@ -54,8 +54,13 @@ public class Translation {
     private ArrayList<String> letterArr = new ArrayList<>();
     private ArrayList<String> englishArr = new ArrayList<>();
     String message = "";
-    
 
+
+    /**
+     * This is the constructor for the Translation class.
+     * Initializes the ArrayList for each letter and
+     * numbers 1 through 5 to correspond to the appropriate Morse
+     */
    public Translation() {
 
        a.add("short");
@@ -229,6 +234,13 @@ public class Translation {
        letters.put("5", five);
    }
 
+    /**
+     * This method is used to split up each letter in morse code and
+     * then call other methods to obtain the
+     * same message the user entered but in English
+     * @param arrayList This is the list that has the Morse code entered by the user
+     * @return String This returns the translated English message
+     */
     public String Translate(ArrayList<String> arrayList) {
 
        for (int i = 0; i < arrayList.size(); i++) {
@@ -244,13 +256,17 @@ public class Translation {
 
        englishArr.add(translation(letterArr));
        letterArr.clear();
-
        message = arrayToMessage(englishArr);
        englishArr.clear();
 
-        return message;
+       return message;
     }
 
+    /**
+     * This method is used convert the translated message from an ArrayList to a String
+     * @param englishArr This is the translated message
+     * @return String This returns the same message in the englishArr but as a String
+     */
     private String arrayToMessage(ArrayList<String> englishArr) {
 
        String englishMessage = "";
@@ -263,6 +279,11 @@ public class Translation {
        return englishMessage;
     }
 
+    /**
+     * This method is used to translate a single letter from Morse code to english
+     * @param arrayList This is a single letter in Morse code
+     * @return String This returns the translated letter
+     */
     private String translation(ArrayList<String> arrayList) {
 
        String letter = "";
@@ -276,5 +297,4 @@ public class Translation {
         }
         return letter;
     }
-
 }

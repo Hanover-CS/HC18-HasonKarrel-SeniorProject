@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:contentDescription="@string/logo"
-        app:srcCompat="@drawable/logo" />
+        app:srcCompat="@drawable/morselogo" />
 
     <EditText
         android:id="@+id/email_ET"

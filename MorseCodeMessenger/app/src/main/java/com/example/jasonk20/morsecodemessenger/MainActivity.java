@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,13 +77,9 @@ public class MainActivity extends AppCompatActivity {
 
         ChatBubbles = new ArrayList<>();
         listView = (ListView) findViewById(R.id.list_msg);
-
-        //set ListView adapter first
         adapter = new MessageAdapter(this, R.layout.left_chat_bubble, ChatBubbles);
         listView.setAdapter(adapter);
-
         sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-
         userMessageTV = (TextView) findViewById(R.id.userMessage_TV);
 
 //        Check location permissions
@@ -104,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         mSend_Btn = (Button) findViewById(R.id.send_Btn);
         mBackSpace = (Button) findViewById(R.id.backspace_Btn);
         mDot = (Button) findViewById(R.id.dot_Btn);
@@ -112,14 +108,16 @@ public class MainActivity extends AppCompatActivity {
         mSpacebar = (Button) findViewById(R.id.spacebar_Btn);
         regular_ET = (EditText) findViewById(R.id.regularText_ET);
         regularTextSend = (ImageButton) findViewById(R.id.regularSendBT);
-
         keyboardInt = 0;
 
         // Gets branch for the desired chat room
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference(chatRoomName);
 
-//        adds a short unit to the morse code arraylist
+
+        /**
+         * adds a short unit to the morse code arraylist
+         */
         mDot.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -128,7 +126,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-//        adds a long unit to the morse code arraylist
+        /**
+         * adds a long unit to the morse code arraylist
+         */
         mDash.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -137,6 +137,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * adds a space to the morse code arraylist
+         */
         mSpacebar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,6 +148,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * deletes a unit from the morse code arraylist
+         */
         mBackSpace.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -155,6 +161,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * Gathers the user's message and sends it to the sendtoDB method so it can be added to the DB
+         */
         regularTextSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -170,6 +179,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * When the send button for a morse code message is clicked
+         */
         mSend_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -177,6 +189,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /**
+         * The required methods retrieve data from the DB
+         */
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -205,6 +220,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method calls the Translate method to convert the user's message to English.
+     * This method also goes through checks to determine what kind of message the user is trying to send.
+     */
     private void sendBtnOnClick() {
 
 //       Sends morse code array to the the translation algorithm
@@ -225,7 +244,6 @@ public class MainActivity extends AppCompatActivity {
 
             sosOn_or_Off = sharedPref.getString("SOS Functionality", "");
 
-
 //       If user sends SOS message and the functionality is turned on then create the SOS message with the user's location
             if (finalMessage.equals("S O S") && sosOn_or_Off.equals("ON")) {
 
@@ -240,6 +258,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is used to send the user's message to the database
+     * @param message The message created by the user
+     */
     private void sendtoDB(String message) {
 
         Map<String, Object> temp_Map = new HashMap<String, Object>();
@@ -262,6 +284,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is used to update the TextView to visually
+     * see the Morse code that is being clicked
+     */
     private void updateUserMessage() {
 
         String userMessage = "";
@@ -285,6 +311,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is used to remove the email tag and just leave the unique username
+     * @param user The current user's email used to login
+     */
     private String removeEmail(FirebaseUser user) {
 
         String temp = user.getEmail().toString();
@@ -298,6 +328,10 @@ public class MainActivity extends AppCompatActivity {
         return userName;
     }
 
+    /**
+     * This method is used to get the current date
+     * @return  String The current date
+     */
     private String getDate() {
         DateFormat dateFormat = new SimpleDateFormat("EE h:mm a");
         Date date = new Date();
@@ -306,6 +340,13 @@ public class MainActivity extends AppCompatActivity {
         return currDate;
     }
 
+    /**
+     * This method is used to get the preset message that corresponds
+     * to a number between 1 and 5 that is
+     * saved in the SharedPreferences
+     * @param englishMessage a number between 1 and 5
+     * @return String the message that corresponds to the number parameter
+     */
     private String getPresetMessage(String englishMessage) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         String message = sharedPref.getString(englishMessage, "");
@@ -315,7 +356,12 @@ public class MainActivity extends AppCompatActivity {
 
     private String message, date, user;
 
-    //  ADDS MESSAGE TO THE LIST VIEW
+    /**
+     * This method is used to iterate through the database
+     * and add each message into a chatbubble
+     * and add the chatbubble to the ListView
+     * @param dataSnapshot the data from the database
+     */
     private void add_Message(DataSnapshot dataSnapshot) {
         Iterator i = dataSnapshot.getChildren().iterator();
 
@@ -333,19 +379,26 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method is used to get the current location of the device
+     */
     private void getLocation() {
+//        Checks if the user has already given permission for the application to access the location of the device
+
+//        Permission not granted
         if (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
                 (MainActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
+//      Permission granted
+//      Use three location managers so if one method isn't available or
+//      too slow the current location will still be gathered
         } else {
             Location locationNetwork = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
             Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-            Location locationPassive = locationManager.getLastKnownLocation(LocationManager. PASSIVE_PROVIDER);
+            Location locationPassive = locationManager.getLastKnownLocation(LocationManager.PASSIVE_PROVIDER);
 
             if (locationNetwork != null) {
                 double latti = locationNetwork.getLatitude();
@@ -369,18 +422,24 @@ public class MainActivity extends AppCompatActivity {
                 locMessageBuilder(latitude, longitude);
 
             }else{
-
-                Toast.makeText(this,"Unble to Trace your location",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"Unable to gather current location",Toast.LENGTH_SHORT).show();
             }
         }
     }
 
+    /**
+     * This method is used to create the SOS message with the current Latitude and Longitude of the device
+     * @param lat current Latitude
+     * @param lon current Longitude
+     */
     void locMessageBuilder(String lat, String lon) {
         finalMessage = "Help I'm in trouble and need assistance, here's my location:"+ "\n" + "Latitude = " + lat
                 + "\n" + "Longitude = " + lon;
     }
-
-//      builds an alert when app doesn't have permission to access location
+    /**
+     * This method builds an alert when app
+     * doesn't have permission to access current device location
+     */
     protected void buildAlertMessageNoGps() {
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);

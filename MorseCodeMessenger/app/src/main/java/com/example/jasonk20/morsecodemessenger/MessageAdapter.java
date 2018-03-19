@@ -18,6 +18,12 @@ public class MessageAdapter extends ArrayAdapter<ChatBubble> {
     private Activity activity;
     private List<ChatBubble> messages;
 
+    /**
+     * This is the constructor for the MessageAdapter Class
+     * @param context The current activity used for the adapter
+     * @param resource The layout that will be used to create the chatbubbles
+     * @param  objects The list of ChatBubble objects with the corresponding messsages from the DB
+     */
     public MessageAdapter(Activity context, int resource, List<ChatBubble> objects) {
         super(context, resource, objects);
         this.activity = context;
@@ -32,7 +38,6 @@ public class MessageAdapter extends ArrayAdapter<ChatBubble> {
         int layoutResource = 0; // determined by view type
         ChatBubble ChatBubble = getItem(position);
 
-
         layoutResource = R.layout.left_chat_bubble;
 
         if (convertView != null) {
@@ -42,7 +47,6 @@ public class MessageAdapter extends ArrayAdapter<ChatBubble> {
             holder = new ViewHolder(convertView);
             convertView.setTag(holder);
         }
-
         //set message content
         holder.msg.setText(ChatBubble.getContent());
 

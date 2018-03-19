@@ -23,26 +23,14 @@ public class Settings extends AppCompatActivity {
     private Switch mCurrLocation_Switch;
     private Toolbar mToolbar;
 
-
-
-
-    private Button tempButton;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-
         mLogOut = (Button) findViewById(R.id.logOut_Btn);
         mAuth = FirebaseAuth.getInstance();
         mPreset_Btn = (Button) findViewById(R.id.preset_Btn);
         mCurrLocation_Switch = (Switch) findViewById(R.id.currLocation_Switch);
-
-
-
-
-
         mToolbar = (Toolbar) findViewById(R.id.settings_Toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Settings");
@@ -53,7 +41,11 @@ public class Settings extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        
+
+        /**
+         * When logout button is clicked the Firebase logout method is
+         * called and the user is then sent to the login activity
+         */
         mLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,6 +56,10 @@ public class Settings extends AppCompatActivity {
             }
         });
 
+        /**
+         * When present messages button is clicked user is
+         * taken to the preset messages activity
+         */
         mPreset_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -73,6 +69,10 @@ public class Settings extends AppCompatActivity {
         });
 
 
+        /**
+         * Internally saves the current status of
+         * the SOS functionality switch
+         */
         mCurrLocation_Switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -88,10 +88,12 @@ public class Settings extends AppCompatActivity {
                 }
             }
         });
-
-
     }
 
+    /**
+     * When the activity is first created the
+     * switch is corrected to its appropriate state
+     */
     @Override
     protected void onStart() {
         super.onStart();
@@ -103,9 +105,4 @@ public class Settings extends AppCompatActivity {
             mCurrLocation_Switch.setChecked(false);
         }
     }
-
-
-
-
-
 }

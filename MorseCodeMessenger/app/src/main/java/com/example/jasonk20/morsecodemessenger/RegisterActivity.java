@@ -37,10 +37,13 @@ public class RegisterActivity extends AppCompatActivity {
         reg_Btn = (Button) findViewById(R.id.register_Btn);
         backView = (ImageButton) findViewById(R.id.backview);
         progressBar = (ProgressBar) findViewById(R.id.progressBarReg);
-
         mAuth = FirebaseAuth.getInstance();
 
 
+        /**
+         * Gathers the email and password entered by the user
+         * and sends to the createNewUser method
+         */
         reg_Btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,23 +59,28 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+//        Sends user to the login activity
         backView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
-
     }
 
 
 
+    /**
+     * This method is used to create a new user and
+     * their credentials are saved to Google Firebase Authentication
+     * @param email1 Email entered by the user
+     * @param password1  Password entered by the user
+     */
     private void createNewUser(String email1, String password1) {
         mAuth.createUserWithEmailAndPassword(email1, password1)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-
                         progressBar.setVisibility(View.INVISIBLE);
 
                         if (task.isSuccessful()) {
@@ -84,9 +92,7 @@ public class RegisterActivity extends AppCompatActivity {
                             // If sign in fails, display a message to the user.
                             Toast.makeText(RegisterActivity.this, "Could not create new account", Toast.LENGTH_SHORT).show();
                         }
-
                     }
                 });
-
     }
 }

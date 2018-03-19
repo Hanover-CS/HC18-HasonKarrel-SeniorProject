@@ -8,5 +8,6 @@ import android.app.Application;
 
 public class Global extends Application {
 
+//    Used as a global variable to be able to know when the splash screen has already been showed onStart
     public static boolean splashed = false;
 }
