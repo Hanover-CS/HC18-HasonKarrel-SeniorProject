@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:background="@drawable/bubble_in"
+        android:layout_marginTop="5dp"
         android:orientation="vertical"
         android:paddingBottom="10dp">
 
@@ -18,7 +19,7 @@
             android:layout_height="wrap_content"
             android:maxWidth="300dp"
             android:padding="5dp"
-            android:textColor="@android:color/holo_red_dark" />
+            android:textColor="@android:color/black" />
 
     </LinearLayout>
 
