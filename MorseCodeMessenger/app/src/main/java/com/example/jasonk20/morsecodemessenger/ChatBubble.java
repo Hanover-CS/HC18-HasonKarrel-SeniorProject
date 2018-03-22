@@ -2,6 +2,10 @@ package com.example.jasonk20.morsecodemessenger;
 
 /**
  * Created by jasonk20 on 1/6/18.
+ *
+ * This class creates a generic chat bubble.
+ * This is one component for displaying the messages
+ * for a particular chat room to the user
  */
 
 public class ChatBubble {

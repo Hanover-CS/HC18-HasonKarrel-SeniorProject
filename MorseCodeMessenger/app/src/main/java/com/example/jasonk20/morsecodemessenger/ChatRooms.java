@@ -39,6 +39,11 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * This Activity is the Launcher activity and displays all the chat rooms in the database to the user.
+ * The user can then choose a chat room to enter so they can start messaging.
+ */
+
 public class ChatRooms extends AppCompatActivity {
 
     private ListView chatRoomsList;

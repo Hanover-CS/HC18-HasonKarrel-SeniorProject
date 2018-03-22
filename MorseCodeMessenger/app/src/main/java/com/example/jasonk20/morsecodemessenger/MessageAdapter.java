@@ -11,6 +11,8 @@ import java.util.List;
 
 /**
  * Created by jasonk20 on 1/6/18.
+ *
+ * This class is used to update the list of messages in the activity
  */
 
 public class MessageAdapter extends ArrayAdapter<ChatBubble> {

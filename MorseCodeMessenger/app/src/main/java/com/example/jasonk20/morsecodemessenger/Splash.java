@@ -11,6 +11,9 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jasonk20 on 3/15/18.
+ *
+ * This class is used to display an initial loading splash screen once
+ * the application is initially opened and not already running in the background
  */
 
 public class Splash extends Activity {

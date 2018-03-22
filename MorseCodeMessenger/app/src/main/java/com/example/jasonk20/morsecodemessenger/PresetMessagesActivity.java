@@ -13,6 +13,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+/**
+ * This activity is used to set the preset messages that correspond to a number
+ */
+
 public class PresetMessagesActivity extends AppCompatActivity {
 
     private Spinner mSpinner;

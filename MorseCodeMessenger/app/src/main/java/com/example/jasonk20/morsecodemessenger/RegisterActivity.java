@@ -18,6 +18,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * This activity is for users to create a new account so they can log into the application
+ */
+
 public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;

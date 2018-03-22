@@ -11,6 +11,8 @@ import java.util.Map;
 
 /**
  * Created by jasonk20 on 10/31/17.
+ *
+ * This class is used to convert Morse code into English
  */
 
 

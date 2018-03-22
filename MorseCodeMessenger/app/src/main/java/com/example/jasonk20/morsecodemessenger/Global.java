@@ -4,6 +4,8 @@ import android.app.Application;
 
 /**
  * Created by jasonk20 on 3/16/18.
+ *
+ * This class is used to initialize global variables for the application
  */
 
 public class Global extends Application {

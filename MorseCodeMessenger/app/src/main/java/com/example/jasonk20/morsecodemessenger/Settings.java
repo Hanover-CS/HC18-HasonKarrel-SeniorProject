@@ -15,6 +15,10 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * This activity is used to display the the app's settings
+ */
+
 public class Settings extends AppCompatActivity {
 
     private Button mLogOut;

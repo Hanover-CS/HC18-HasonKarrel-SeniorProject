@@ -18,6 +18,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
+/**
+ * This activity is used for signing into the application
+ */
+
 public class LoginActivity extends AppCompatActivity {
 
 
@@ -75,7 +79,6 @@ public class LoginActivity extends AppCompatActivity {
      * @param email1 This is th user's email
      * @param password1  This is the user's password
      */
-
     private void signin_existingUser(String email1, String password1) {
         mAuth.signInWithEmailAndPassword(email1, password1)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {

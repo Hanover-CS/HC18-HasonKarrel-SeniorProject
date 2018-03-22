@@ -44,6 +44,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This activity is used to send and receive messages for the desired chat room
+ */
 
 public class MainActivity extends AppCompatActivity {
 
