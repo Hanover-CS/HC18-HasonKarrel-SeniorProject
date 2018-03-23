@@ -12,7 +12,7 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="30dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:contentDescription="@string/logo"
@@ -47,11 +47,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:text="@string/login"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password_ET"/>
+        app:layout_constraintTop_toBottomOf="@+id/password_ET"
+        android:background="@drawable/custom_button"
+        android:foreground="?attr/selectableItemBackgroundBorderless"
+        android:drawableLeft="@drawable/ic_person"/>
 
     <ProgressBar
         android:id="@+id/progressBar"

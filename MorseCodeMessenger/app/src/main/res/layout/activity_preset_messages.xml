@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:theme="@style/AppTheme"
     android:background="#5b5b5b"
     tools:context="com.example.jasonk20.morsecodemessenger.PresetMessagesActivity">
 
@@ -36,7 +37,7 @@
         android:paddingRight="10dp"
         android:paddingLeft="10dp"
         android:paddingTop="20dp"
-        android:popupBackground="@android:color/holo_blue_light" />
+        android:popupBackground="#4f4f51" />
 
 
     <EditText
@@ -56,11 +57,12 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:paddingRight="10dp"
         android:paddingLeft="10dp"
         android:text="@string/set"
-        android:id="@+id/presetSubmit_Btn"/>
+        android:id="@+id/presetSubmit_Btn"
+        android:background="@drawable/custom_button"/>
 
     </LinearLayout>
 </LinearLayout>
