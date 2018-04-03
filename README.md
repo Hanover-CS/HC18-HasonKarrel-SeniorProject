@@ -15,7 +15,7 @@ Morse Code Messenger is an Android group chat application which gives users the 
 ### Authentication
 
 * Front End:
-	* Logn Page
+	* Login Page
 	* New user registration page
 * Back End:
 	* Google Firebase Authentication
@@ -55,8 +55,6 @@ Morse Code Messenger is an Android group chat application which gives users the 
 	* Permissions to store local data
 	* Use Shared Preferences to store key-value pairs
 
-
-
 ### Translation Algorithm
 
 * Converts tapping the screen into an English message
@@ -67,12 +65,7 @@ Morse Code Messenger is an Android group chat application which gives users the 
 
 * Use Google Play services API to make a request for the last known location of the user’s device
 * Specify app permissions for the ability of the application to retrieve the current location of the device
-* Use the Location Services Client through the FusedLocationProviderClient and call the getLastLocation function
 * Used for sending a message containing the user’s current location
-
-## Deployment
-
-Will be available on the Google Play Store once the application is complete
 
 ## Built With
 
